@@ -24,7 +24,7 @@ get_header(); ?>
 		<div id="adminmenuback"></div>
 		<div id="adminmenuwrap">
 			<ul id="adminmenu">
-				<li class="wp-has-submenu wp-not-current-submenu menu-top toplevel_page_gutenberg menu-top-last" id="toplevel_page_gutenberg"><a href="admin.php?page=gutenberg" class="wp-has-submenu wp-not-current-submenu menu-top toplevel_page_gutenberg menu-top-last" aria-haspopup="true"><div class="wp-menu-arrow"><div></div></div><div class="wp-menu-image dashicons-before dashicons-edit"><br></div><div class="wp-menu-name">Frontenberg</div></a></li>
+				<li class="wp-has-submenu wp-not-current-submenu menu-top toplevel_page_gutenberg menu-top-last" id="toplevel_page_gutenberg"><a href="https://github.com/tomjn/Frontenberg" class="wp-has-submenu wp-not-current-submenu menu-top toplevel_page_gutenberg menu-top-last" aria-haspopup="true"><div class="wp-menu-arrow"><div></div></div><div class="wp-menu-image dashicons-before dashicons-edit"><br></div><div class="wp-menu-name">Frontenberg</div></a></li>
 				<li class="wp-not-current-submenu menu-top menu-icon-comments menu-top-last" id="menu-comments">
 	<a href="https://tomjn.com" class="wp-not-current-submenu menu-top menu-icon-comments menu-top-last"><div class="wp-menu-arrow"><div></div></div><div class="wp-menu-image dashicons-before dashicons-admin-site"><br></div><div class="wp-menu-name">tomjn.com</div></a></li>
 			</ul>
