@@ -35,7 +35,7 @@ add_action( 'init', function() {
 		add_filter( 'wp_insert_post_empty_content', '__return_true', PHP_INT_MAX -1, 2 );
 	}
 });
-function give_permissions( $allcaps, $cap, $args ) {
+function frontenberg_give_permissions( $allcaps, $cap, $args ) {
 	if ( is_user_logged_in() ) {
 		return $allcaps;
 	}
@@ -62,9 +62,9 @@ function give_permissions( $allcaps, $cap, $args ) {
 
 	return $allcaps;
 }
-add_filter( 'user_has_cap', 'give_permissions', 10, 3 );
+add_filter( 'user_has_cap', 'frontenberg_give_permissions', 10, 3 );
 
-function frontenburg_remove_toolbar_node($wp_admin_bar) {
+function frontenberg_remove_toolbar_node($wp_admin_bar) {
 	if ( is_user_logged_in() ) {
 		return;
 	}
@@ -96,4 +96,59 @@ function frontenburg_remove_toolbar_node($wp_admin_bar) {
     ));
 	
 }
-add_action('admin_bar_menu', 'frontenburg_remove_toolbar_node', 999);
+add_action('admin_bar_menu', 'frontenberg_remove_toolbar_node', 999);
+
+
+
+add_action( 'wp_ajax_nopriv_query-attachments', 'frontenberg_wp_ajax_nopriv_query_attachments' );
+/**
+ * Ajax handler for querying attachments.
+ *
+ * @since 3.5.0
+ */
+function frontenberg_wp_ajax_nopriv_query_attachments() {
+
+	$query = isset( $_REQUEST['query'] ) ? (array) $_REQUEST['query'] : array();
+	$keys = array(
+		's', 'order', 'orderby', 'posts_per_page', 'paged', 'post_mime_type',
+		'post_parent', 'post__in', 'post__not_in', 'year', 'monthnum'
+	);
+	foreach ( get_taxonomies_for_attachments( 'objects' ) as $t ) {
+		if ( $t->query_var && isset( $query[ $t->query_var ] ) ) {
+			$keys[] = $t->query_var;
+		}
+	}
+
+	$query = array_intersect_key( $query, array_flip( $keys ) );
+	$query['post_type'] = 'attachment';
+	if ( MEDIA_TRASH
+		&& ! empty( $_REQUEST['query']['post_status'] )
+		&& 'trash' === $_REQUEST['query']['post_status'] ) {
+		$query['post_status'] = 'trash';
+	} else {
+		$query['post_status'] = 'inherit';
+	}
+
+	// Filter query clauses to include filenames.
+	if ( isset( $query['s'] ) ) {
+		add_filter( 'posts_clauses', '_filter_query_attachment_filenames' );
+	}
+
+	/**
+	 * Filters the arguments passed to WP_Query during an Ajax
+	 * call for querying attachments.
+	 *
+	 * @since 3.7.0
+	 *
+	 * @see WP_Query::parse_query()
+	 *
+	 * @param array $query An array of query variables.
+	 */
+	$query = apply_filters( 'ajax_query_attachments_args', $query );
+	$query = new WP_Query( $query );
+
+	$posts = array_map( 'wp_prepare_attachment_for_js', $query->posts );
+	$posts = array_filter( $posts );
+
+	wp_send_json_success( $posts );
+}
