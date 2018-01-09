@@ -21,32 +21,31 @@ $data = get_plugin_data( WP_PLUGIN_DIR . '/gutenberg/gutenberg.php' );
 $gutenberg_version = $data['Version'];
 
 ?>
+<div id="wpwrap">
+	<div id="adminmenumain" role="navigation" aria-label="Main menu">
+		<a href="#wpbody-content" class="screen-reader-shortcut">Skip to main content</a>
+		<a href="#wp-toolbar" class="screen-reader-shortcut">Skip to toolbar</a>
+		<div id="adminmenuback"></div>
+		<div id="adminmenuwrap">
+			<ul id="adminmenu">
+				<li class="wp-has-submenu wp-not-current-submenu menu-top toplevel_page_gutenberg menu-top-last" id="toplevel_page_gutenberg"><a href="https://github.com/tomjn/Frontenberg" class="wp-has-submenu wp-not-current-submenu menu-top toplevel_page_gutenberg menu-top-last" aria-haspopup="true"><div class="wp-menu-arrow"><div></div></div><div class="wp-menu-image dashicons-before dashicons-edit"><br></div><div class="wp-menu-name">Frontenberg</div></a></li>
+				<li class="wp-not-current-submenu menu-top menu-icon-comments menu-top-last" id="menu-comments">
+					<a href="https://tomjn.com" class="wp-not-current-submenu menu-top menu-icon-comments menu-top-last"><div class="wp-menu-arrow"><div></div></div><div class="wp-menu-image dashicons-before dashicons-admin-site"><br></div><div class="wp-menu-name">tomjn.com</div></a></li>
+				<li class="wp-not-current-submenu menu-top menu-icon-performance menu-top-last" id="menu-comments">
+					<a href="#" class="wp-not-current-submenu menu-top menu-icon-performance menu-top-last"><div class="wp-menu-arrow"><div></div></div><div class="wp-menu-image dashicons-before dashicons-performance"><br></div><div class="wp-menu-name">Gutenberg v<?php echo esc_html( $gutenberg_version ); ?></div></a></li>
 
-	<div id="wpwrap">
-		<div id="adminmenumain" role="navigation" aria-label="Main menu">
-			<a href="#wpbody-content" class="screen-reader-shortcut">Skip to main content</a>
-			<a href="#wp-toolbar" class="screen-reader-shortcut">Skip to toolbar</a>
-			<div id="adminmenuback"></div>
-			<div id="adminmenuwrap">
-				<ul id="adminmenu">
-					<li class="wp-has-submenu wp-not-current-submenu menu-top toplevel_page_gutenberg menu-top-last" id="toplevel_page_gutenberg"><a href="https://github.com/tomjn/Frontenberg" class="wp-has-submenu wp-not-current-submenu menu-top toplevel_page_gutenberg menu-top-last" aria-haspopup="true"><div class="wp-menu-arrow"><div></div></div><div class="wp-menu-image dashicons-before dashicons-edit"><br></div><div class="wp-menu-name">Frontenberg</div></a></li>
-					<li class="wp-not-current-submenu menu-top menu-icon-comments menu-top-last" id="menu-comments">
-						<a href="https://tomjn.com" class="wp-not-current-submenu menu-top menu-icon-comments menu-top-last"><div class="wp-menu-arrow"><div></div></div><div class="wp-menu-image dashicons-before dashicons-admin-site"><br></div><div class="wp-menu-name">tomjn.com</div></a></li>
-					<li class="wp-not-current-submenu menu-top menu-icon-performance menu-top-last" id="menu-comments">
-						<a href="#" class="wp-not-current-submenu menu-top menu-icon-performance menu-top-last"><div class="wp-menu-arrow"><div></div></div><div class="wp-menu-image dashicons-before dashicons-performance"><br></div><div class="wp-menu-name">Gutenberg v<?php echo esc_html( $gutenberg_version ); ?></div></a></li>
-
-				</ul>
-			</div>
+			</ul>
 		</div>
-		<div id="wpcontent">
-			<div id="wpbody" role="main">
-				<div id="wpbody-content" aria-label="Main content" tabindex="0">
-					<div class="nvda-temp-fix screen-reader-text">&nbsp;</div>
-					<div class="gutenberg">
-						<div id="editor" class="gutenberg__editor"></div>
-					</div>
+	</div>
+	<div id="wpcontent">
+		<div id="wpbody" role="main">
+			<div id="wpbody-content" aria-label="Main content" tabindex="0">
+				<div class="nvda-temp-fix screen-reader-text">&nbsp;</div>
+				<div class="gutenberg">
+					<div id="editor" class="gutenberg__editor"></div>
 				</div>
 			</div>
 		</div>
 	</div>
+</div>
 <?php get_footer();
