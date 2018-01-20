@@ -3,13 +3,12 @@
 add_action( 'init', function() {
 	add_theme_support( 'align-wide' );
 	show_admin_bar( true );
-	require( ABSPATH.'/wp-admin/includes/plugin.php' );
-	require( ABSPATH.'/wp-admin/includes/class-wp-screen.php' );
-	require( ABSPATH.'/wp-admin/includes/screen.php' );
-	require( ABSPATH.'/wp-admin/includes/template.php' );
+	require_once( ABSPATH.'/wp-admin/includes/plugin.php' );
+	require_once( ABSPATH.'/wp-admin/includes/class-wp-screen.php' );
+	require_once( ABSPATH.'/wp-admin/includes/screen.php' );
+	require_once( ABSPATH.'/wp-admin/includes/template.php' );
 	
 	add_action( 'wp_enqueue_scripts', function() {
-		//gutenberg.test/wp-admin/load-styles.php?c=1&amp;dir=ltr&amp;load%5B%5D=dashicons,admin-bar,common,forms,admin-menu,dashboard,list-tables,edit,revisions,media,themes,about,nav-menus,wp-pointer,widgets&amp;load%5B%5D=,site-icon,l10n,buttons,wp-auth-check&amp;ver=4.9-RC1-42056
 		wp_enqueue_style('dashicons');
 		wp_enqueue_style('common');
 		wp_enqueue_style('forms');
@@ -27,9 +26,6 @@ add_action( 'init', function() {
 		wp_enqueue_style('widgets');
 		wp_enqueue_style('l10n');
 		wp_enqueue_style('buttons');
-		/*wp_enqueue_style('');
-		wp_enqueue_style('');
-		wp_enqueue_style('');*/
 	} );
 	add_action( 'wp_enqueue_scripts', 'gutenberg_editor_scripts_and_styles' );
 
