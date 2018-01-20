@@ -3,6 +3,7 @@
 add_action( 'init', function() {
 	add_theme_support( 'align-wide' );
 	show_admin_bar( true );
+	require( ABSPATH.'/wp-admin/includes/plugin.php' );
 	require( ABSPATH.'/wp-admin/includes/class-wp-screen.php' );
 	require( ABSPATH.'/wp-admin/includes/screen.php' );
 	require( ABSPATH.'/wp-admin/includes/template.php' );
