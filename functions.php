@@ -34,6 +34,18 @@ add_action( 'init', function() {
 		add_filter( 'pre_insert_term', function( $t ) {return ''; });
 	}
 });
+
+// Disable use XML-RPC
+add_filter( 'xmlrpc_enabled', '__return_false' );
+
+// Disable X-Pingback to header
+add_filter( 'wp_headers', 'disable_x_pingback' );
+function disable_x_pingback( $headers ) {
+	unset( $headers['X-Pingback'] );
+
+	return $headers;
+}
+
 function frontenberg_give_permissions( $allcaps, $cap, $args ) {
 	if ( is_user_logged_in() ) {
 		return $allcaps;
