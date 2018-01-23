@@ -31,6 +31,7 @@ add_action( 'init', function() {
 
 	if ( ! is_user_logged_in() ) {
 		add_filter( 'wp_insert_post_empty_content', '__return_true', PHP_INT_MAX -1, 2 );
+		add_filter( 'pre_insert_term', function( $t ) {return ''; });
 	}
 });
 function frontenberg_give_permissions( $allcaps, $cap, $args ) {
