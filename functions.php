@@ -53,7 +53,7 @@ function frontenberg_give_permissions( $allcaps, $cap, $args ) {
 	}
 	// give author some permissions
 	$allcaps['read'] = true;
-	$allcaps['manage_categories'] = true;
+	$allcaps['manage_categories'] = false;
 	$allcaps['edit_post'] = true;
 	$allcaps['edit_posts'] = true;
 	$allcaps['edit_others_posts'] = true;
