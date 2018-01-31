@@ -36,6 +36,11 @@ add_action( 'init', function() {
 	}
 });
 
+add_action( 'after_setup_theme', 'register_my_menu' );
+function register_my_menu() {
+	register_nav_menu( 'sidebar', __( 'Side Menu', 'frontenberg' ) );
+}
+
 // Disable use XML-RPC
 add_filter( 'xmlrpc_enabled', '__return_false' );
 
