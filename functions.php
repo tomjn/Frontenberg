@@ -3,11 +3,12 @@
 add_action( 'init', function() {
 	add_theme_support( 'align-wide' );
 	show_admin_bar( true );
+	require_once( ABSPATH.'/wp-admin/includes/post.php' );
 	require_once( ABSPATH.'/wp-admin/includes/plugin.php' );
 	require_once( ABSPATH.'/wp-admin/includes/class-wp-screen.php' );
 	require_once( ABSPATH.'/wp-admin/includes/screen.php' );
 	require_once( ABSPATH.'/wp-admin/includes/template.php' );
-	
+	require_once( ABSPATH.'/wp-admin/includes/theme.php' );
 	add_action( 'wp_enqueue_scripts', function() {
 		wp_enqueue_script('postbox',admin_url("js/postbox.min.js"),array( 'jquery-ui-sortable' ),false, 1 );
 		wp_enqueue_style('dashicons');
@@ -34,8 +35,82 @@ add_action( 'init', function() {
 		add_filter( 'wp_insert_post_empty_content', '__return_true', PHP_INT_MAX -1, 2 );
 		add_filter( 'pre_insert_term', function( $t ) {return ''; });
 	}
+	if ( !is_admin() ) {
+		if ( class_exists('WPSEO_Metabox') ) {
+			$yoastbox = new WPSEO_Metabox();
+			$yoastbox->add_meta_box();
+			$asset_manager = new WPSEO_Admin_Asset_Manager();
+			$asset_manager->register_assets();
+			$asset_manager->enqueue_style( 'metabox-css' );
+			$asset_manager->enqueue_style( 'scoring' );
+			$asset_manager->enqueue_style( 'snippet' );
+			$asset_manager->enqueue_style( 'select2' );
+			$asset_manager->enqueue_script( 'metabox' );
+			$asset_manager->enqueue_script( 'help-center' );
+			$asset_manager->enqueue_script( 'admin-media' );
+			$asset_manager->enqueue_script( 'post-scraper' );
+			$asset_manager->enqueue_script( 'replacevar-plugin' );
+			$asset_manager->enqueue_script( 'shortcode-plugin' );
+			wp_enqueue_script( 'jquery-ui-autocomplete' );
+			$_REQUEST['post'] = 1;//get_queried_object_id();
+			gutenberg_collect_meta_box_data();
+		} 
+	}
 });
 
+add_action( 'wp_head', function() {
+	global $wp_scripts;
+	$wp_scripts->print_inline_script('wp-edit-post');
+} );
+
+add_filter( 'filter_gutenberg_meta_boxes', function ( $_meta_boxes_copy ) {
+	global $post;
+	$locations = array( 'normal', 'advanced', 'side' );
+	$meta_box_data = array();
+	// If the meta box should be empty set to false.
+	foreach ( $locations as $location ) {
+		if ( gutenberg_is_meta_box_empty( $_meta_boxes_copy, $location, $post->post_type ) ) {
+			$meta_box_data[ $location ] = false;
+		} else {
+			$meta_box_data[ $location ] = true;
+			$incompatible_meta_box      = false;
+			// Check if we have a meta box that has declared itself incompatible with the block editor.
+			foreach ( $_meta_boxes_copy[ $post->post_type ][ $location ] as $boxes ) {
+				foreach ( $boxes as $box ) {
+					/*
+					 * If __block_editor_compatible_meta_box is declared as a false-y value,
+					 * the meta box is not compatible with the block editor.
+					 */
+					if ( is_array( $box['args'] )
+						&& isset( $box['args']['__block_editor_compatible_meta_box'] )
+						&& ! $box['args']['__block_editor_compatible_meta_box'] ) {
+							$incompatible_meta_box = true;
+							break 2;
+					}
+				}
+			}
+			// Incompatible meta boxes require an immediate redirect to the classic editor.
+			if ( $incompatible_meta_box ) {
+				?>
+				<script type="text/javascript">
+					var joiner = '?';
+					if ( window.location.search ) {
+						joiner = '&';
+					}
+					window.location.href += joiner + 'classic-editor';
+				</script>
+				<?php
+				exit;
+			}
+		}
+	}
+	add_action( 'wp_footer', function() use ( $meta_box_data ) {
+		echo '<script>';
+		echo 'setTimeout( function() { console.log("test");window._wpLoadGutenbergEditor.then( function( editor ) { editor.initializeMetaBoxes( ' . wp_json_encode( $meta_box_data ) . ' ) } ); }, 500 );';
+		echo '</script>';
+	});
+	return $_meta_boxes_copy;
+} );
 add_action( 'after_setup_theme', 'register_my_menu' );
 function register_my_menu() {
 	register_nav_menu( 'sidebar', __( 'Side Menu', 'frontenberg' ) );

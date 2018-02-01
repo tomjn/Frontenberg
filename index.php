@@ -50,6 +50,17 @@ $gutenberg_version = $data['Version'];
 				<div class="nvda-temp-fix screen-reader-text">&nbsp;</div>
 				<div class="gutenberg">
 					<div id="editor" class="gutenberg__editor"></div>
+					<?php
+						global $wp_meta_boxes, $current_screen;
+						global $post;
+						do_action( 'add_metaboxes', $post->post_type, $post );
+						$current_screen = WP_Screen::get('post');//'post';
+						?>
+					<div id="metaboxes" style="display: none;">
+						<?php the_gutenberg_metaboxes(); ?>
+					</div>
+						<?php
+					?>
 				</div>
 			</div>
 		</div>
