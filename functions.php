@@ -6,7 +6,6 @@ add_action( 'init', function() {
 	require_once( ABSPATH.'/wp-admin/includes/plugin.php' );
 	require_once( ABSPATH.'/wp-admin/includes/class-wp-screen.php' );
 	require_once( ABSPATH.'/wp-admin/includes/screen.php' );
-	require_once( ABSPATH.'/wp-admin/includes/template.php' );
 	
 	add_action( 'wp_enqueue_scripts', function() {
 		wp_enqueue_script('postbox',admin_url("js/postbox.min.js"),array( 'jquery-ui-sortable' ),false, 1 );
