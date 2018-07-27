@@ -3,9 +3,6 @@
 add_action( 'init', function() {
 	add_theme_support( 'align-wide' );
 	show_admin_bar( true );
-	require_once( ABSPATH.'/wp-admin/includes/plugin.php' );
-	require_once( ABSPATH.'/wp-admin/includes/class-wp-screen.php' );
-	require_once( ABSPATH.'/wp-admin/includes/screen.php' );
 	
 	add_action( 'wp_enqueue_scripts', function() {
 		wp_enqueue_script('postbox',admin_url("js/postbox.min.js"),array( 'jquery-ui-sortable' ),false, 1 );
@@ -87,27 +84,25 @@ function frontenberg_remove_toolbar_node($wp_admin_bar) {
 	$wp_admin_bar->remove_node('wp-logo-external');
 	$wp_admin_bar->remove_node('about');
 	$wp_admin_bar->add_menu( array(
-        'id'    => 'wp-logo',
-        'title' => '<span class="ab-icon"></span>',
-        'href'  => home_url(),
+		'id'    => 'wp-logo',
+		'title' => '<span class="ab-icon"></span>',
+		'href'  => home_url(),
         'meta'  => array(
-        	'class' => 'wp-logo',
-            'title' => __('FrontenBerg'),            
-        ),
-    ));
+			'class' => 'wp-logo',
+			'title' => __('FrontenBerg'),            
+		),
+	));
 	$wp_admin_bar->add_menu( array(
-        'id'    => 'frontenderg',
-        'title' => 'Frontenberg',
-        'href'  => home_url(),
-        'meta'  => array(
-            'title' => __('FrontenBerg'),            
+		'id'    => 'frontenderg',
+		'title' => 'Frontenberg',
+		'href'  => home_url(),
+		'meta'  => array(
+			'title' => __('FrontenBerg'),            
         ),
     ));
 	
 }
 add_action('admin_bar_menu', 'frontenberg_remove_toolbar_node', 999);
-
-
 
 add_action( 'wp_ajax_nopriv_query-attachments', 'frontenberg_wp_ajax_nopriv_query_attachments' );
 /**
@@ -116,7 +111,6 @@ add_action( 'wp_ajax_nopriv_query-attachments', 'frontenberg_wp_ajax_nopriv_quer
  * @since 3.5.0
  */
 function frontenberg_wp_ajax_nopriv_query_attachments() {
-
 	$query = isset( $_REQUEST['query'] ) ? (array) $_REQUEST['query'] : array();
 	$keys = array(
 		's', 'order', 'orderby', 'posts_per_page', 'paged', 'post_mime_type',
