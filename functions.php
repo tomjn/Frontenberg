@@ -16,6 +16,7 @@ add_action( 'init', function() {
 		wp_enqueue_style('nav-menus');
 		wp_enqueue_style('l10n');
 		wp_enqueue_style('buttons');
+		wp_enqueue_style('frontenberg', get_template_directory_uri() . '/style.css');
 	} );
 	add_action( 'wp_enqueue_scripts', 'gutenberg_editor_scripts_and_styles' );
 
