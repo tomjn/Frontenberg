@@ -42,4 +42,4 @@ $gutenberg_version = $data['Version'];
 </div>
 <?php
 
-wp_footer();
+get_footer();
