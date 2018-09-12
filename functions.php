@@ -156,3 +156,36 @@ function frontenberg_wp_ajax_nopriv_query_attachments() {
 
 	wp_send_json_success( $posts );
 }
+
+/**
+ * Trying to make changes on the server won't work, so why bother contacting the REST API anyway?
+ * This function hooks into the apiFetch and adds a middleware. This middleware intercepts all
+ * PATCH PUT DELETE etc requests and replaces them with "empty promises" that resolve immediatley
+ * without consequence.
+ *
+ * Sure, the requests would fail anyway, but this way there's fewer pings to the server to deal
+ * with, and failure is now instantaneous*/
+add_action( 'wp_footer', function() {
+	?>
+	<script>
+	// @TODO: This setTimeout hack doesn't sit well with me, find a better solution that doesn't require jQuery
+	setTimeout( function() {
+		window._wpLoadGutenbergEditor.then( function( editor ) { 
+			wp.apiFetch.use( function ( options, next ) {
+				if ( 'method' in options ) {
+					if ( [ 'PATCH', 'PUT', 'DELETE' ].indexOf( options.method.toUpperCase() ) >= 0 ) {
+					        return new Promise(function(resolve, reject) {
+							// Save Data
+							resolve(data);
+						});
+					}
+				}
+				const result = next( options );
+		    		return result;
+			} );
+		} );
+	}, 500 );
+	</script>
+	<?php
+});
+
