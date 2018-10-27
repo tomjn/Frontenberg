@@ -189,3 +189,11 @@ add_action( 'wp_footer', function() {
 	<?php
 });
 
+add_filter( 'update_post_metadata', function(  $check, $object_id, $meta_key ) {
+	if ( $meta_key == '_edit_lock' ) {
+		return false;
+	}
+	return $check;
+}, 10, 3 );
+
+
