@@ -28,12 +28,13 @@ add_action( 'init', function() {
 	if ( function_exists('gutenberg_editor_scripts_and_styles') ) {
 		add_action( 'wp_enqueue_scripts', 'gutenberg_editor_scripts_and_styles' );
 	} else {
+		global $post;
 		// Gutenberg isn't active, fall back to WP 5+ internal block editor
-		wp_add_inline_script(
-			'wp-blocks',
-			sprintf( 'wp.blocks.setCategories( %s );', wp_json_encode( get_block_categories( $post ) ) ),
-			'after'
-		);
+		//wp_add_inline_script(
+		//	'wp-blocks',
+		//	sprintf( 'wp.blocks.setCategories( %s );', wp_json_encode( get_block_categories( $post ) ) ),
+		//	'after'
+		//);
 		/*
 		 * Assign initial edits, if applicable. These are not initially assigned to the persisted post,
 		 * but should be included in its save payload.
@@ -56,10 +57,10 @@ add_action( 'init', function() {
 			);
 		}
 		// Preload server-registered block schemas.
-		wp_add_inline_script(
-			'wp-blocks',
-			'wp.blocks.unstable__bootstrapServerSideBlockDefinitions(' . wp_json_encode( get_block_editor_server_block_settings() ) . ');'
-		);
+		//wp_add_inline_script(
+		//	'wp-blocks',
+		//	'wp.blocks.unstable__bootstrapServerSideBlockDefinitions(' . wp_json_encode( get_block_editor_server_block_settings() ) . ');'
+		//);
 		// Get admin url for handling meta boxes.
 		$meta_box_url = admin_url( 'post.php' );
 		$meta_box_url = add_query_arg(
