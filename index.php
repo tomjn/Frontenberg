@@ -2,10 +2,10 @@
 
 get_header();
 
-$gutenberg_version = 'Core';
-if ( ! function_exists('gutenberg_editor_scripts_and_styles') ) {
+$gutenberg_version = 'WP Core';
+if ( function_exists('gutenberg_editor_scripts_and_styles') ) {
 	$data = get_plugin_data( WP_PLUGIN_DIR . '/gutenberg/gutenberg.php' );
-	$gutenberg_version = $data['Version'];
+	$gutenberg_version = 'Gutenberg '.$data['Version'];
 }
 
 ?>
@@ -17,7 +17,7 @@ if ( ! function_exists('gutenberg_editor_scripts_and_styles') ) {
 		<div id="adminmenuwrap">
 			<ul id="adminmenu">
 				<li class="wp-not-current-submenu menu-top menu-icon-performance menu-top-last" id="menu-comments">
-					<a href="#" class="wp-not-current-submenu menu-top menu-icon-performance menu-top-last"><div class="wp-menu-arrow"><div></div></div><div class="wp-menu-image dashicons-before dashicons-performance"><br></div><div class="wp-menu-name">Gutenberg v<?php echo esc_html( $gutenberg_version ); ?></div></a></li>
+					<a href="#" class="wp-not-current-submenu menu-top menu-icon-performance menu-top-last"><div class="wp-menu-arrow"><div></div></div><div class="wp-menu-image dashicons-before dashicons-performance"><br></div><div class="wp-menu-name">Version: <?php echo esc_html( $gutenberg_version ); ?></div></a></li>
 				<?php
 					if ( has_nav_menu( 'sidebar' ) ) {
 						wp_nav_menu( [
