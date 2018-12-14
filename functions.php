@@ -5,24 +5,27 @@ add_action( 'init', function() {
 	show_admin_bar( true );
 	
 	add_action( 'wp_enqueue_scripts', function() {
-		wp_enqueue_script('postbox',admin_url("js/postbox.min.js"),array( 'jquery-ui-sortable' ),false, 1 );
-		wp_enqueue_style('dashicons');
-		wp_enqueue_style('common');
-		wp_enqueue_style('forms');
-		wp_enqueue_style('dashboard');
-		wp_enqueue_style('media');
-		wp_enqueue_style('admin-menu');
-		wp_enqueue_style('admin-bar');
-		wp_enqueue_style('nav-menus');
-		wp_enqueue_style('l10n');
-		wp_enqueue_style('buttons');
-		wp_enqueue_style('frontenberg', get_template_directory_uri() . '/style.css');
+		wp_enqueue_script( 'postbox', admin_url("js/postbox.min.js"),array( 'jquery-ui-sortable' ),false, 1 );
+		wp_enqueue_style( 'dashicons' );
+		wp_enqueue_style( 'common' );
+		wp_enqueue_style( 'forms' );
+		wp_enqueue_style( 'dashboard' );
+		wp_enqueue_style( 'media' );
+		wp_enqueue_style( 'admin-menu' );
+		wp_enqueue_style( 'admin-bar' );
+		wp_enqueue_style( 'nav-menus' );
+		wp_enqueue_style( 'l10n' );
+		wp_enqueue_style( 'buttons' );
+		wp_enqueue_style( 'frontenberg', get_template_directory_uri() . '/style.css' );
 	} );
 	add_action( 'wp_enqueue_scripts', 'gutenberg_editor_scripts_and_styles' );
 
 	if ( ! is_user_logged_in() ) {
 		add_filter( 'wp_insert_post_empty_content', '__return_true', PHP_INT_MAX -1, 2 );
 		add_filter( 'pre_insert_term', function( $t ) {return ''; });
+		add_filter( 'update_post_metadata', '__return_false' );
+		add_filter( 'add_post_metadata', '__return_false' );
+		add_filter( 'delete_post_metadata', '__return_false' );
 	}
 });
 
@@ -197,3 +200,15 @@ add_filter( 'update_post_metadata', function(  $check, $object_id, $meta_key ) {
 	return $check;
 }, 10, 3 );
 add_filter( 'wp_check_post_lock_window', '__return_false' );
+
+function tomjn_override_post_lock( $metadata, $object_id, $meta_key ){
+    // Here is the catch, add additional controls if needed (post_type, etc)
+    $meta_needed = '_edit_lock';
+    if ( isset( $meta_key ) && $meta_needed == $meta_key ){
+        return false;
+    }
+    // Return original if the check does not pass
+    return $metadata;
+}
+
+add_filter( 'get_post_metadata', 'tomjn_override_post_lock', 100, 3 );
