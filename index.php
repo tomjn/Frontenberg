@@ -38,14 +38,11 @@ if ( ! function_exists('gutenberg_editor_scripts_and_styles') ) {
 				<div class="nvda-temp-fix screen-reader-text">&nbsp;</div>
 				<div class="block-editor gutenberg">
 					<div id="editor" class="block-editor__container gutenberg__editor"></div>
-					<?php if ( function_exists('the_block_editor_meta_boxes') ) {
-						?>
 					<div id="metaboxes" class="hidden">
-						<?php the_block_editor_meta_boxes(); ?>
+						<?php /*
+						this is commented out because it causes a fatal with do_metaboxes not being found
+						the_block_editor_meta_boxes(); */ ?>
 					</div>
-						<?php
-					}
-					?>
 				</div>
 			</div>
 		</div>
