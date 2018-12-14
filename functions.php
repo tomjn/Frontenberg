@@ -57,7 +57,7 @@ function frontenberg_load_wp5_editor() {
 	// Gutenberg isn't active, fall back to WP 5+ internal block editor
 	wp_add_inline_script(
 		'wp-blocks',
-		sprintf( 'wp.blocks.setCategories( %s );', wp_json_encode( get_block_categories( $post ) ) ),
+		sprintf( 'wp.blocks.setCategories( %s );', wp_json_encode( frontenberg_get_block_categories( $post ) ) ),
 		'after'
 	);
 	/*
@@ -468,56 +468,54 @@ function tomjn_override_post_lock( $metadata, $object_id, $meta_key ){
 
 add_filter( 'get_post_metadata', 'tomjn_override_post_lock', 100, 3 );
 
-if ( !is_admin() && !function_exists( 'get_block_categories' ) ){
+/**
+ * Returns all the block categories that will be shown in the block editor.
+ *
+ * @since 5.0.0
+ *
+ * @param WP_Post $post Post object.
+ * @return array Array of block categories.
+ */
+function frontenberg_get_block_categories( $post ) {
+	$default_categories = array(
+		array(
+			'slug'  => 'common',
+			'title' => __( 'Common Blocks' ),
+			'icon'  => 'screenoptions',
+		),
+		array(
+			'slug'  => 'formatting',
+			'title' => __( 'Formatting' ),
+			'icon'  => null,
+		),
+		array(
+			'slug'  => 'layout',
+			'title' => __( 'Layout Elements' ),
+			'icon'  => null,
+		),
+		array(
+			'slug'  => 'widgets',
+			'title' => __( 'Widgets' ),
+			'icon'  => null,
+		),
+		array(
+			'slug'  => 'embed',
+			'title' => __( 'Embeds' ),
+			'icon'  => null,
+		),
+		array(
+			'slug'  => 'reusable',
+			'title' => __( 'Reusable Blocks' ),
+			'icon'  => null,
+		),
+	);
 	/**
-	 * Returns all the block categories that will be shown in the block editor.
+	 * Filter the default array of block categories.
 	 *
 	 * @since 5.0.0
 	 *
-	 * @param WP_Post $post Post object.
-	 * @return array Array of block categories.
+	 * @param array   $default_categories Array of block categories.
+	 * @param WP_Post $post               Post being loaded.
 	 */
-	function get_block_categories( $post ) {
-		$default_categories = array(
-			array(
-				'slug'  => 'common',
-				'title' => __( 'Common Blocks' ),
-				'icon'  => 'screenoptions',
-			),
-			array(
-				'slug'  => 'formatting',
-				'title' => __( 'Formatting' ),
-				'icon'  => null,
-			),
-			array(
-				'slug'  => 'layout',
-				'title' => __( 'Layout Elements' ),
-				'icon'  => null,
-			),
-			array(
-				'slug'  => 'widgets',
-				'title' => __( 'Widgets' ),
-				'icon'  => null,
-			),
-			array(
-				'slug'  => 'embed',
-				'title' => __( 'Embeds' ),
-				'icon'  => null,
-			),
-			array(
-				'slug'  => 'reusable',
-				'title' => __( 'Reusable Blocks' ),
-				'icon'  => null,
-			),
-		);
-		/**
-		 * Filter the default array of block categories.
-		 *
-		 * @since 5.0.0
-		 *
-		 * @param array   $default_categories Array of block categories.
-		 * @param WP_Post $post               Post being loaded.
-		 */
-		return apply_filters( 'block_categories', $default_categories, $post );
-	}
+	return apply_filters( 'block_categories', $default_categories, $post );
 }
