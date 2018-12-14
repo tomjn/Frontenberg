@@ -189,11 +189,11 @@ add_action( 'wp_footer', function() {
 	<?php
 });
 
+// Attempt to disable post locking
 add_filter( 'update_post_metadata', function(  $check, $object_id, $meta_key ) {
 	if ( $meta_key == '_edit_lock' ) {
 		return false;
 	}
 	return $check;
 }, 10, 3 );
-
-
+add_filter( 'wp_check_post_lock_window', '__return_false' );
