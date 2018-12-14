@@ -11,6 +11,9 @@ function frontenberg_get_block_editor_version() {
 
 add_action( 'init', function() {
 	add_theme_support( 'align-wide' );
+	add_theme_support( 'title-tag' );
+	add_theme_support( 'post-thumbnails' );
+	add_theme_support( 'html5' );
 	show_admin_bar( true );
 	
 	add_action( 'wp_enqueue_scripts', function() {
