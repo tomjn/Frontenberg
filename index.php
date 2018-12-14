@@ -2,8 +2,11 @@
 
 get_header();
 
-$data = get_plugin_data( WP_PLUGIN_DIR . '/gutenberg/gutenberg.php' );
-$gutenberg_version = $data['Version'];
+$gutenberg_version = 'Core';
+if ( ! function_exists('gutenberg_editor_scripts_and_styles') ) {
+	$data = get_plugin_data( WP_PLUGIN_DIR . '/gutenberg/gutenberg.php' );
+	$gutenberg_version = $data['Version'];
+}
 
 ?>
 <div id="wpwrap">
@@ -35,6 +38,14 @@ $gutenberg_version = $data['Version'];
 				<div class="nvda-temp-fix screen-reader-text">&nbsp;</div>
 				<div class="block-editor gutenberg">
 					<div id="editor" class="block-editor__container gutenberg__editor"></div>
+					<?php if ( function_exists('the_block_editor_meta_boxes') ) {
+						?>
+					<div id="metaboxes" class="hidden">
+						<?php the_block_editor_meta_boxes(); ?>
+					</div>
+						<?php
+					}
+					?>
 				</div>
 			</div>
 		</div>
