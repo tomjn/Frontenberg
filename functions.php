@@ -1,5 +1,14 @@
 <?php
 
+function frontenberg_get_block_editor_version() {
+	$version = 'WP Core';
+	if ( function_exists('gutenberg_editor_scripts_and_styles') ) {
+		$data = get_plugin_data( WP_PLUGIN_DIR . '/gutenberg/gutenberg.php' );
+		$version = 'Gutenberg '.$data['Version'];
+	}
+	return $version;
+}
+
 add_action( 'init', function() {
 	add_theme_support( 'align-wide' );
 	show_admin_bar( true );
