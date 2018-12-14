@@ -468,7 +468,7 @@ function tomjn_override_post_lock( $metadata, $object_id, $meta_key ){
 
 add_filter( 'get_post_metadata', 'tomjn_override_post_lock', 100, 3 );
 
-if ( !function_exists( 'get_block_categories' ) ){
+if ( !is_admin() && !function_exists( 'get_block_categories' ) ){
 	/**
 	 * Returns all the block categories that will be shown in the block editor.
 	 *
