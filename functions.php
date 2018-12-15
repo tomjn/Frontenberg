@@ -243,7 +243,7 @@ JS;
 	 * @param array   $editor_settings Default editor settings.
 	 * @param WP_Post $post            Post being edited.
 	 */
-	$editor_settings = apply_filters( 'block_editor_settings', $editor_settings, $post );
+	$editor_settings = apply_filters( 'block_editor_settings', $editor_settings, get_queried_object() );
 	$script = sprintf(
 		$init_script,
 		get_queried_object()->post_type,
