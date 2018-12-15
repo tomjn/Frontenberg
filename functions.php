@@ -14,6 +14,9 @@ add_action( 'init', function() {
 	add_theme_support( 'title-tag' );
 	add_theme_support( 'post-thumbnails' );
 	add_theme_support( 'html5' );
+	if ( is_admin() ) {
+		return;
+	}
 	show_admin_bar( true );
 	
 	add_action( 'wp_enqueue_scripts', function() {
@@ -34,12 +37,12 @@ add_action( 'init', function() {
 			wp_enqueue_script( 'heartbeat' );
 			wp_enqueue_script( 'wp-edit-post' );
 			wp_enqueue_script( 'wp-format-library' );
-			do_action( 'enqueue_block_editor_assets' );
 		}
 	} );
 	if ( function_exists('gutenberg_editor_scripts_and_styles') ) {
 		add_action( 'wp_enqueue_scripts', 'gutenberg_editor_scripts_and_styles' );
 	} else {
+		do_action( 'enqueue_block_editor_assets' );
 		frontenberg_load_wp5_editor();
 	}
 
