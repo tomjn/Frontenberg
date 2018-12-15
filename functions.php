@@ -56,10 +56,6 @@ add_action( 'init', function() {
 });
 
 function frontenberg_load_wp5_editor() {
-	if ( !is_singular() ) {
-		wp_safe_redirect( home_url() );
-		exit;
-	}
 	// Gutenberg isn't active, fall back to WP 5+ internal block editor
 	wp_add_inline_script(
 		'wp-blocks',
