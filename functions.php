@@ -137,24 +137,6 @@ function frontenberg_load_wp5_editor() {
 			),
 		),
 	);
-	if ( $editor_styles && current_theme_supports( 'editor-styles' ) ) {
-		foreach ( $editor_styles as $style ) {
-			if ( preg_match( '~^(https?:)?//~', $style ) ) {
-				$response = wp_remote_get( $style );
-				if ( ! is_wp_error( $response ) ) {
-					$styles[] = array(
-						'css' => wp_remote_retrieve_body( $response ),
-					);
-				}
-			} else {
-				$file     = get_theme_file_path( $style );
-				$styles[] = array(
-					'css'     => file_get_contents( get_theme_file_path( $style ) ),
-					'baseURL' => get_theme_file_uri( $style ),
-				);
-			}
-		}
-	}
 
 	/**
 	 * Filters the allowed block types for the editor, defaulting to true (all
@@ -238,15 +220,6 @@ function frontenberg_load_wp5_editor() {
 	} );
 } )();
 JS;
-	/**
-	 * Filters the settings to pass to the block editor.
-	 *
-	 * @since 5.0.0
-	 *
-	 * @param array   $editor_settings Default editor settings.
-	 * @param WP_Post $post            Post being edited.
-	 */
-	$editor_settings = apply_filters( 'block_editor_settings', $editor_settings, get_queried_object() );
 	$script = sprintf(
 		$init_script,
 		get_queried_object()->post_type,
