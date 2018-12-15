@@ -20,6 +20,7 @@ add_action( 'init', function() {
 	show_admin_bar( true );
 	
 	add_action( 'wp_enqueue_scripts', function() {
+		
 		wp_enqueue_script( 'postbox', admin_url("js/postbox.min.js"),array( 'jquery-ui-sortable' ),false, 1 );
 		wp_enqueue_style( 'dashicons' );
 		wp_enqueue_style( 'common' );
@@ -37,6 +38,8 @@ add_action( 'init', function() {
 			wp_enqueue_script( 'heartbeat' );
 			wp_enqueue_script( 'wp-edit-post' );
 			wp_enqueue_script( 'wp-format-library' );
+			wp_enqueue_style( 'wp-edit-post' );
+			wp_enqueue_style( 'wp-format-library' );
 		}
 	} );
 	if ( function_exists('gutenberg_editor_scripts_and_styles') ) {
