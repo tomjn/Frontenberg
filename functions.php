@@ -59,10 +59,13 @@ add_action( 'init', function() {
 });
 
 function frontenberg_load_wp5_editor() {
+	global $post;
+	the_post();
+
 	// Gutenberg isn't active, fall back to WP 5+ internal block editor
 	wp_add_inline_script(
 		'wp-blocks',
-		sprintf( 'wp.blocks.setCategories( %s );', wp_json_encode( frontenberg_get_block_categories( get_queried_object() ) ) ),
+		sprintf( 'wp.blocks.setCategories( %s );', wp_json_encode( frontenberg_get_block_categories( $post ) ) ),
 		'after'
 	);
 	/*
@@ -80,7 +83,7 @@ function frontenberg_load_wp5_editor() {
 	$meta_box_url = admin_url( 'post.php' );
 	$meta_box_url = add_query_arg(
 		array(
-			'post'            => get_queried_object_id(),
+			'post'            => $post->ID,
 			'action'          => 'edit',
 			'meta-box-loader' => true,
 			'_wpnonce'        => wp_create_nonce( 'meta-box-loader' ),
@@ -111,12 +114,12 @@ function frontenberg_load_wp5_editor() {
 	 *                                        boolean to enable/disable all.
 	 * @param object $post                    The post resource data.
 	 */
-	$allowed_block_types = apply_filters( 'allowed_block_types', true, get_queried_object() );
+	$allowed_block_types = apply_filters( 'allowed_block_types', true, $post );
 	// Get all available templates for the post/page attributes meta-box.
 	// The "Default template" array element should only be added if the array is
 	// not empty so we do not trigger the template select element without any options
 	// besides the default value.
-	$available_templates = wp_get_theme()->get_page_templates( get_queried_object() );
+	$available_templates = wp_get_theme()->get_page_templates( $post );
 	$available_templates = ! empty( $available_templates ) ? array_merge(
 		array(
 			/** This filter is documented in wp-admin/includes/meta-boxes.php */
@@ -148,12 +151,12 @@ function frontenberg_load_wp5_editor() {
 	 *                                        boolean to enable/disable all.
 	 * @param object $post                    The post resource data.
 	 */
-	$allowed_block_types = apply_filters( 'allowed_block_types', true, get_queried_object() );
+	$allowed_block_types = apply_filters( 'allowed_block_types', true, $post );
 	// Get all available templates for the post/page attributes meta-box.
 	// The "Default template" array element should only be added if the array is
 	// not empty so we do not trigger the template select element without any options
 	// besides the default value.
-	$available_templates = wp_get_theme()->get_page_templates( get_queried_object() );
+	$available_templates = wp_get_theme()->get_page_templates( $post );
 	$available_templates = ! empty( $available_templates ) ? array_merge(
 		array(
 			/** This filter is documented in wp-admin/includes/meta-boxes.php */
@@ -186,7 +189,7 @@ function frontenberg_load_wp5_editor() {
 		$editor_settings['templateLock'] = ! empty( $post_type_object->template_lock ) ? $post_type_object->template_lock : false;
 	}
 	// If there's no template set on a new post, use the post format, instead.
-	if ( $is_new_post && ! isset( $editor_settings['template'] ) && 'post' === get_queried_object()->post_type ) {
+	if ( $is_new_post && ! isset( $editor_settings['template'] ) && 'post' === $post->post_type ) {
 		$post_format = get_post_format( $post );
 		if ( in_array( $post_format, array( 'audio', 'gallery', 'image', 'quote', 'video' ), true ) ) {
 			$editor_settings['template'] = array( array( "core/$post_format" ) );
@@ -204,8 +207,8 @@ function frontenberg_load_wp5_editor() {
 JS;
 	$script = sprintf(
 		$init_script,
-		get_queried_object()->post_type,
-		get_queried_object_id(),
+		$post->post_type,
+		$post->ID,
 		'{"alignWide":true,"availableTemplates":[],"allowedBlockTypes":true,"disableCustomColors":false,"disableCustomFontSizes":false,"disablePostFormats":true,"titlePlaceholder":"Add title","bodyPlaceholder":"Start writing or type \/ to choose a block","isRTL":false,"autosaveInterval":10,"maxUploadFileSize":20971520,"allowedMimeTypes":{"jpg|jpeg|jpe":"image\/jpeg","png":"image\/png","gif":"image\/gif","mov|qt":"video\/quicktime","avi":"video\/avi","mpeg|mpg|mpe":"video\/mpeg","3gp|3gpp":"video\/3gpp","3g2|3gp2":"video\/3gpp2","mid|midi":"audio\/midi","pdf":"application\/pdf","doc":"application\/msword","docx":"application\/vnd.openxmlformats-officedocument.wordprocessingml.document","docm":"application\/vnd.ms-word.document.macroEnabled.12","pot|pps|ppt":"application\/vnd.ms-powerpoint","pptx":"application\/vnd.openxmlformats-officedocument.presentationml.presentation","pptm":"application\/vnd.ms-powerpoint.presentation.macroEnabled.12","odt":"application\/vnd.oasis.opendocument.text","ppsx":"application\/vnd.openxmlformats-officedocument.presentationml.slideshow","ppsm":"application\/vnd.ms-powerpoint.slideshow.macroEnabled.12","xla|xls|xlt|xlw":"application\/vnd.ms-excel","xlsx":"application\/vnd.openxmlformats-officedocument.spreadsheetml.sheet","xlsm":"application\/vnd.ms-excel.sheet.macroEnabled.12","xlsb":"application\/vnd.ms-excel.sheet.binary.macroEnabled.12","key":"application\/vnd.apple.keynote","mp3|m4a|m4b":"audio\/mpeg","ogg|oga":"audio\/ogg","wma":"audio\/x-ms-wma","wav":"audio\/wav","mp4|m4v":"video\/mp4","webm":"video\/webm","ogv":"video\/ogg","wmv":"video\/x-ms-wmv","flv":"video\/x-flv"},"styles":[{"css":"body{color:#191e23;font-family:\"Noto Serif\",serif}body,p{font-size:16px;line-height:1.8}ol,ul{margin:0;padding:0}ul{list-style-type:disc}ol{list-style-type:decimal}ol ul,ul ul{list-style-type:circle}.mce-content-body{line-height:1.8}"},{"css":"body { font-family: \'Noto Serif\' }"}],"imageSizes":[{"slug":"thumbnail","name":"Thumbnail"},{"slug":"medium","name":"Medium"},{"slug":"large","name":"Large"},{"slug":"full","name":"Full Size"}],"richEditingEnabled":true,"postLock":{"isLocked":false,"activePostLock":"1544836349:1"},"postLockUtils":{"nonce":"12345","unlockNonce":"12345","ajaxUrl":""},"enableCustomFields":true}',
 		'null'
 	);
@@ -216,7 +219,7 @@ JS;
 	 */
 	wp_enqueue_media(
 		array(
-			'post' => get_queried_object_id(),
+			'post' => $post->ID,
 		)
 	);
 	wp_enqueue_editor();
