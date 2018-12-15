@@ -69,21 +69,6 @@ function frontenberg_load_wp5_editor() {
 	 */
 	$initial_edits = null;
 	$is_new_post   = false;
-	if ( 'auto-draft' === $post->post_status ) {
-		$is_new_post = true;
-		// Override "(Auto Draft)" new post default title with empty string, or filtered value.
-		$initial_edits = array(
-			'title'   => array(
-				'raw' => $post->post_title,
-			),
-			'content' => array(
-				'raw' => $post->post_content,
-			),
-			'excerpt' => array(
-				'raw' => $post->post_excerpt,
-			),
-		);
-	}
 	// Preload server-registered block schemas.
 	wp_add_inline_script(
 		'wp-blocks',
