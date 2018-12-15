@@ -82,10 +82,10 @@ function frontenberg_load_wp5_editor() {
 		);
 	}
 	// Preload server-registered block schemas.
-	//wp_add_inline_script(
-	//	'wp-blocks',
-	//	'wp.blocks.unstable__bootstrapServerSideBlockDefinitions(' . wp_json_encode( get_block_editor_server_block_settings() ) . ');'
-	//);
+	wp_add_inline_script(
+		'wp-blocks',
+		'wp.blocks.unstable__bootstrapServerSideBlockDefinitions(' . wp_json_encode( frontenberg_get_block_editor_server_block_settings() ) . ');'
+	);
 	// Get admin url for handling meta boxes.
 	$meta_box_url = admin_url( 'post.php' );
 	$meta_box_url = add_query_arg(
@@ -518,4 +518,26 @@ function frontenberg_get_block_categories( $post ) {
 	 * @param WP_Post $post               Post being loaded.
 	 */
 	return apply_filters( 'block_categories', $default_categories, $post );
+}
+
+function frontenberg_get_block_editor_server_block_settings() {
+    $block_registry = WP_Block_Type_Registry::get_instance();
+    $blocks         = array();
+    $keys_to_pick   = array( 'title', 'description', 'icon', 'category', 'keywords', 'supports', 'attributes' );
+ 
+    foreach ( $block_registry->get_all_registered() as $block_name => $block_type ) {
+        foreach ( $keys_to_pick as $key ) {
+            if ( ! isset( $block_type->{ $key } ) ) {
+                continue;
+            }
+ 
+            if ( ! isset( $blocks[ $block_name ] ) ) {
+                $blocks[ $block_name ] = array();
+            }
+ 
+            $blocks[ $block_name ][ $key ] = $block_type->{ $key };
+        }
+    }
+ 
+    return $blocks;
 }
