@@ -56,11 +56,10 @@ add_action( 'init', function() {
 });
 
 function frontenberg_load_wp5_editor() {
-	global $post;
 	// Gutenberg isn't active, fall back to WP 5+ internal block editor
 	wp_add_inline_script(
 		'wp-blocks',
-		sprintf( 'wp.blocks.setCategories( %s );', wp_json_encode( frontenberg_get_block_categories( $post ) ) ),
+		sprintf( 'wp.blocks.setCategories( %s );', wp_json_encode( frontenberg_get_block_categories( get_queried_object() ) ) ),
 		'after'
 	);
 	/*
@@ -78,7 +77,7 @@ function frontenberg_load_wp5_editor() {
 	$meta_box_url = admin_url( 'post.php' );
 	$meta_box_url = add_query_arg(
 		array(
-			'post'            => $post->ID,
+			'post'            => get_queried_object_id(),
 			'action'          => 'edit',
 			'meta-box-loader' => true,
 			'_wpnonce'        => wp_create_nonce( 'meta-box-loader' ),
@@ -109,12 +108,12 @@ function frontenberg_load_wp5_editor() {
 	 *                                        boolean to enable/disable all.
 	 * @param object $post                    The post resource data.
 	 */
-	$allowed_block_types = apply_filters( 'allowed_block_types', true, $post );
+	$allowed_block_types = apply_filters( 'allowed_block_types', true, get_queried_object() );
 	// Get all available templates for the post/page attributes meta-box.
 	// The "Default template" array element should only be added if the array is
 	// not empty so we do not trigger the template select element without any options
 	// besides the default value.
-	$available_templates = wp_get_theme()->get_page_templates( get_post( $post->ID ) );
+	$available_templates = wp_get_theme()->get_page_templates( get_queried_object() );
 	$available_templates = ! empty( $available_templates ) ? array_merge(
 		array(
 			/** This filter is documented in wp-admin/includes/meta-boxes.php */
@@ -164,12 +163,12 @@ function frontenberg_load_wp5_editor() {
 	 *                                        boolean to enable/disable all.
 	 * @param object $post                    The post resource data.
 	 */
-	$allowed_block_types = apply_filters( 'allowed_block_types', true, $post );
+	$allowed_block_types = apply_filters( 'allowed_block_types', true, get_queried_object() );
 	// Get all available templates for the post/page attributes meta-box.
 	// The "Default template" array element should only be added if the array is
 	// not empty so we do not trigger the template select element without any options
 	// besides the default value.
-	$available_templates = wp_get_theme()->get_page_templates( get_post( $post->ID ) );
+	$available_templates = wp_get_theme()->get_page_templates( get_queried_object() );
 	$available_templates = ! empty( $available_templates ) ? array_merge(
 		array(
 			/** This filter is documented in wp-admin/includes/meta-boxes.php */
@@ -220,7 +219,7 @@ function frontenberg_load_wp5_editor() {
 		$editor_settings['templateLock'] = ! empty( $post_type_object->template_lock ) ? $post_type_object->template_lock : false;
 	}
 	// If there's no template set on a new post, use the post format, instead.
-	if ( $is_new_post && ! isset( $editor_settings['template'] ) && 'post' === $post->post_type ) {
+	if ( $is_new_post && ! isset( $editor_settings['template'] ) && 'post' === get_queried_object()->post_type ) {
 		$post_format = get_post_format( $post );
 		if ( in_array( $post_format, array( 'audio', 'gallery', 'image', 'quote', 'video' ), true ) ) {
 			$editor_settings['template'] = array( array( "core/$post_format" ) );
@@ -247,8 +246,8 @@ JS;
 	$editor_settings = apply_filters( 'block_editor_settings', $editor_settings, $post );
 	$script = sprintf(
 		$init_script,
-		$post->post_type,
-		$post->ID,
+		get_queried_object()->post_type,
+		get_queried_object_id(),
 		wp_json_encode( $editor_settings ),
 		wp_json_encode( $initial_edits )
 	);
@@ -259,7 +258,7 @@ JS;
 	 */
 	wp_enqueue_media(
 		array(
-			'post' => $post->ID,
+			'post' => get_queried_object_id(),
 		)
 	);
 	wp_enqueue_editor();
