@@ -19,10 +19,6 @@ add_action( 'init', function() {
 	}
 	show_admin_bar( true );
 
-	if ( !function_exists('get_current_screen') ) {
-		function get_current_screen() { return ''; }
-	}
-	
 	add_action( 'wp_enqueue_scripts', function() {
 		
 		wp_enqueue_script( 'postbox', admin_url("js/postbox.min.js"),array( 'jquery-ui-sortable' ),false, 1 );
@@ -47,6 +43,9 @@ add_action( 'init', function() {
 		}
 	} );
 	if ( function_exists('gutenberg_editor_scripts_and_styles') ) {
+		if ( !function_exists('get_current_screen') && !(php_sapi_name() == 'cli') ) {
+			function get_current_screen() { return ''; }
+		}
 		add_action( 'wp_enqueue_scripts', 'gutenberg_editor_scripts_and_styles' );
 	} else {
 		do_action( 'enqueue_block_editor_assets' );
