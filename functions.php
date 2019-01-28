@@ -18,6 +18,10 @@ add_action( 'init', function() {
 		return;
 	}
 	show_admin_bar( true );
+
+	if ( !function_exists('get_current_screen') ) {
+		function get_current_screen() { return ''; }
+	}
 	
 	add_action( 'wp_enqueue_scripts', function() {
 		
