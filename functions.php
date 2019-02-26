@@ -377,7 +377,11 @@ add_action( 'wp_footer', function() {
 	setTimeout( function() {
 		var fbeditor = window._wpLoadBlockEditor;
 		if ( window._wpLoadGutenbergEditor ) {
-			editor = window._wpLoadGutenbergEditor;
+			fbeditor = window._wpLoadGutenbergEditor;
+		}
+		if ( fbeditor == null ) {
+			console.error("the editor variable is undefined/null, cannot add the remote request intercept")
+			return;
 		}
 		fbeditor.then( function( editor ) { 
 			wp.apiFetch.use( function ( options, next ) {
@@ -393,7 +397,7 @@ add_action( 'wp_footer', function() {
 		    		return result;
 			} );
 		} );
-	}, 500 );
+	}, 1000 );
 	</script>
 	<?php
 });
