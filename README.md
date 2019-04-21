@@ -10,7 +10,7 @@ It's a WP theme, upload and activate and make sure you have the Gutenberg plugin
 
 ## Can I Use This To Create Frontend Editors?
 
-That's not what this was intended for. A lot of people mispronounce this as fronten**d**berg, but the goal of this is to do the following:
+That's not what this was intended for. A lot of people mispronounce this as *"fronten**d**berg"*, but the goal of this is to do the following:
 
  - Load the WP Admin screen with the block editor, but on the frontend
  - Make it look like the needed REST API endpoints are working for logged out users
