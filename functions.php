@@ -35,6 +35,7 @@ add_action( 'init', function() {
 		wp_enqueue_style( 'frontenberg', get_template_directory_uri() . '/style.css' );
 		
 		if ( ! function_exists('gutenberg_editor_scripts_and_styles') ) {
+			wp_tinymce_inline_scripts();
 			wp_enqueue_script( 'heartbeat' );
 			wp_enqueue_script( 'wp-edit-post' );
 			wp_enqueue_script( 'wp-format-library' );
