@@ -4,23 +4,33 @@ A limited frontend preview of the Gutenberg editor, **not to be confused with a 
 
 Also, if you're logged into WP Admin, be careful, other users will see autosave notices and your changes will be saved!
 
-## Installation
+## I Want To Put a Gutenberg Editor in My Theme
 
-It's a WP theme, upload and activate and make sure you have the Gutenberg plugin installed and activated first.
+This is not the project for you. This is intended to act as a basic sandbox, not a frontend editor component.
+
+### Is it Safe in Production?
+
+Probably not, it was built specifically for https://frontenberg.tomjn.com, not as a general purpose block editor component.
+
+### Can I Use it On a Client Site?
+
+I strongly recommend against it
 
 ## Can I Use This To Create Frontend Editors?
 
-That's not what this was intended for. A lot of people mispronounce this as *"fronten**d**berg"*, but the goal of this is to do the following:
+Not really, it could be used that way, but that would be dangerous, and there are lots of known problems. **Don't use Frontenberg to create a working Frontend Editor**. Don't expect bug reports to be fixed either unless it impacts the core use of a sandbox e.g. frontenberg.tomjn.com testgutenberg.com or wordpress.org/gutenberg
 
- - Load the WP Admin screen with the block editor, but on the frontend
- - Make it look like the needed REST API endpoints are working for logged out users
- - Make sure those endpoints don't do anything for logged out users
- 
- Doing that sometimes requires the inclusion of WP Admin files, and can put WordPress into a strange state.
- 
-Now, having said that, it's possible you could undo the code for the latter two options, afterall the REST API editor context has little to do with the front or back end if everything's authenticated correctly. However, this theme has no styling for smushing the editor into a layout, and makes no guarantees that everything will work. Adding to that, it doesn't modify Gutenberg, it just triggers the code that loads it.
+### What Should I Use?
 
-If you really want to put the block editor on the frontend, use the `<BlockEditor>` React component provided by the Gutenberg document, and use the relevant docs provided by the Gutenberg project
+Use the `BlockProvider` and `BlockList` components provided by Gutenberg
+
+### This Doesn't Work With XYZ
+
+Good to know, but this project isn't supported for integrations with client work or other projects. This is a sandbox project.
+
+## Installation
+
+It's a WP theme, upload and activate and make sure you have the Gutenberg plugin installed and activated first.
 
 ## Troubleshooting
 
