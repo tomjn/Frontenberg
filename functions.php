@@ -65,6 +65,9 @@ add_action( 'init', function() {
 function frontenberg_load_wp5_editor() {
 	global $post;
 	the_post();
+	if ( empty( $post ) ) {
+		wp_die( "No post to edit :(" );
+	}
 
 	// Gutenberg isn't active, fall back to WP 5+ internal block editor
 	wp_add_inline_script(
