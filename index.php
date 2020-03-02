@@ -15,7 +15,7 @@ get_header();
 							<div></div>
 						</div>
 						<div class="wp-menu-image dashicons-before dashicons-performance"><br></div>
-						<div class="wp-menu-name">Version: <?php echo esc_html( frontenberg_get_block_editor_version() ); ?></div>
+						<div class="wp-menu-name"><?php echo esc_html( frontenberg_get_block_editor_version() ); ?></div>
 					</a>
 				</li>
 				<?php
