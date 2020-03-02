@@ -4,7 +4,7 @@ function frontenberg_get_block_editor_version() {
 	$version = 'WP Core';
 	if ( function_exists('gutenberg_dir_path') ) {
 		$data = get_plugin_data( WP_PLUGIN_DIR . '/gutenberg/gutenberg.php' );
-		$version = 'Gutenberg '.$data['Version'];
+		$version = 'Gutenberg v'.$data['Version'];
 	}
 	return $version;
 }
