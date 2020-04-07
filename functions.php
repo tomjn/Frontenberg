@@ -2,6 +2,12 @@
 
 function frontenberg_get_block_editor_version() {
 	$version = 'WP Core';
+
+	// Prevent PHP notice when get_plugin_data is missing
+	if( !function_exists('get_plugin_data') ){
+		require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+	}
+
 	if ( function_exists('gutenberg_dir_path') ) {
 		$data = get_plugin_data( WP_PLUGIN_DIR . '/gutenberg/gutenberg.php' );
 		$version = 'Gutenberg v'.$data['Version'];
