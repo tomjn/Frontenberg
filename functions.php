@@ -368,7 +368,7 @@ function frontenberg_wp_ajax_nopriv_query_attachments() {
 /**
  * Trying to make changes on the server won't work, so why bother contacting the REST API anyway?
  * This function hooks into the apiFetch and adds a middleware. This middleware intercepts all
- * PATCH PUT DELETE etc requests and replaces them with "empty promises" that resolve immediatley
+ * PATCH PUT DELETE etc requests and replaces them with "empty promises" that resolve immediately
  * without consequence.
  *
  * Sure, the requests would fail anyway, but this way there's fewer pings to the server to deal
@@ -392,7 +392,7 @@ add_action( 'wp_footer', function() {
         } );
 	</script>
 	<?php
-});
+}, 99);
 
 // Attempt to disable post locking
 add_filter( 'update_post_metadata', function(  $check, $object_id, $meta_key ) {
