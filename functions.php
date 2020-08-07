@@ -517,23 +517,26 @@ add_action(
 	'wp_footer',
 	function() {
 		?>
-	<script>
-		window._wpLoadBlockEditor.then( function( editor ) {
-			wp.apiFetch.use( function ( options, next ) {
-				if ( 'method' in options ) {
-					if ( [ 'PATCH', 'PUT', 'DELETE' ].indexOf( options.method.toUpperCase() ) >= 0 ) {
-						return new Promise( function( resolve, reject ) {
-							// Save Data
-							resolve(data);
-						} );
-					}
+<script>
+	window._wpLoadBlockEditor.then( function( editor ) {
+		wp.apiFetch.use( function ( options, next ) {
+			if ( 'method' in options ) {
+				if ( [ 'PATCH', 'PUT', 'DELETE' ].indexOf( options.method.toUpperCase() ) >= 0 ) {
+					return new Promise( function( resolve, reject ) {
+						// Save Data
+						resolve(data);
+					} );
 				}
-				const result = next( options );
-				return result;
-			} );
+			}
+			const result = next( options );
+			return result;
 		} );
-	</script>
-	<?php
+		wp.data.select( 'core/editor' ).isEditedPostDirty = function() {
+			return false;
+		}
+	} );
+</script>
+		<?php
 	},
 	99
 );
