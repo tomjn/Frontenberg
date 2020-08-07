@@ -650,3 +650,7 @@ function frontenberg_get_block_editor_server_block_settings() {
 
 	return $blocks;
 }
+
+// No more free advertising for Jetpack.
+add_filter( 'jetpack_gutenberg', '__return_false' );
+
