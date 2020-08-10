@@ -24,7 +24,7 @@ add_action(
 		add_theme_support( 'title-tag' );
 		add_theme_support( 'post-thumbnails' );
 		add_theme_support( 'html5' );
-		if ( is_admin() ) {
+		if ( is_admin() || wp_is_xml_request() ) {
 			return;
 		}
 		show_admin_bar( true );
@@ -70,7 +70,7 @@ add_action(
 		do_action( 'enqueue_block_editor_assets' );
 
 		if ( function_exists( 'gutenberg_dir_path' ) ) {
-			if ( ! function_exists( 'get_current_screen' ) && ! ( php_sapi_name() == 'cli' ) ) {
+			if ( ! is_admin() && ! function_exists( 'get_current_screen' ) && ! ( php_sapi_name() == 'cli' ) ) {
 				function get_current_screen() : string {
 					return '';
 				}
