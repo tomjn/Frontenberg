@@ -268,7 +268,7 @@ function frontenberg_load_wp5_editor() {
 	if ( ! empty( $font_sizes ) ) {
 		$editor_settings['fontSizes'] = $font_sizes;
 	}
-	$editor_settings['styles'] = gutenberg_get_editor_styles();
+	//$editor_settings['styles'] = '';//gutenberg_get_editor_styles();
 
 	if ( ! empty( $post_type_object->template ) ) {
 		$editor_settings['template']     = $post_type_object->template;
