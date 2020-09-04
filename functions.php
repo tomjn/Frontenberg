@@ -1,5 +1,9 @@
 <?php
 
+if (  wp_is_xml_request() ) {
+	return;
+}
+
 /**
  * Get the version string for Gutenberg.
  *
