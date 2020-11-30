@@ -22,56 +22,57 @@ function frontenberg_get_block_editor_version() : string {
 }
 
 add_action(
+	'wp_enqueue_scripts',
+	function() {
+		wp_enqueue_script(
+			'postbox',
+			admin_url( 'js/postbox.min.js' ),
+			[
+				'jquery-ui-sortable',
+			],
+			false,
+			1
+		);
+		wp_enqueue_style(
+			'frontenberg',
+			get_template_directory_uri() . '/style.css',
+			[
+				'dashicons',
+				'common',
+				'forms',
+				'dashboard',
+				'media',
+				'admin-menu',
+				'admin-bar',
+				'nav-menus',
+				//'i10n',
+				'buttons',
+				'wp-edit-post',
+				'wp-format-library',
+			],
+			false
+		);
+
+		wp_tinymce_inline_scripts();
+		wp_enqueue_script( 'heartbeat' );
+		wp_enqueue_script( 'wp-edit-post' );
+		wp_enqueue_script( 'wp-format-library' );
+		
+		do_action( 'enqueue_block_editor_assets' );
+	}
+);
+
+add_action(
 	'init',
 	function () {
 		add_theme_support( 'align-wide' );
 		add_theme_support( 'title-tag' );
 		add_theme_support( 'post-thumbnails' );
 		add_theme_support( 'html5' );
-		if ( is_admin() || wp_is_xml_request() ) {
+		if ( is_admin() || wp_is_xml_request() || wp_is_json_request() ) {
 			return;
 		}
 		show_admin_bar( true );
-
-		add_action(
-			'wp_enqueue_scripts',
-			function() {
-				wp_enqueue_script(
-					'postbox',
-					admin_url( 'js/postbox.min.js' ),
-					[
-						'jquery-ui-sortable',
-					],
-					false,
-					1
-				);
-				wp_enqueue_style(
-					'frontenberg',
-					get_template_directory_uri() . '/style.css',
-					[
-						'dashicons',
-						'common',
-						'forms',
-						'dashboard',
-						'media',
-						'admin-menu',
-						'admin-bar',
-						'nav-menus',
-						//'i10n',
-						'buttons',
-						'wp-edit-post',
-						'wp-format-library',
-					],
-					false
-				);
-
-				wp_tinymce_inline_scripts();
-				wp_enqueue_script( 'heartbeat' );
-				wp_enqueue_script( 'wp-edit-post' );
-				wp_enqueue_script( 'wp-format-library' );
-			}
-		);
-		do_action( 'enqueue_block_editor_assets' );
 
 /*		if ( function_exists( 'gutenberg_dir_path' ) ) {
 			if ( ! is_admin() && ! function_exists( 'get_current_screen' ) && ! ( php_sapi_name() == 'cli' ) ) {
