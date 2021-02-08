@@ -72,6 +72,11 @@ add_action(
 		if ( is_admin() || wp_is_xml_request() || wp_is_json_request() ) {
 			return;
 		}
+
+		if ( 'xmlrpc' === basename( $_SERVER["SCRIPT_FILENAME"], '.php' ) ) {
+			return;
+		}
+
 		show_admin_bar( true );
 
 /*		if ( function_exists( 'gutenberg_dir_path' ) ) {
