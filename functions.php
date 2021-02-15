@@ -155,7 +155,7 @@ function frontenberg_load_wp5_editor() {
 		),
 		$meta_box_url
 	);
-	wp_localize_script( 'wp-editor', '_wpMetaBoxUrl', $meta_box_url );
+	/*wp_localize_script( 'wp-editor', '_wpMetaBoxUrl', $meta_box_url );*/
 
 	// Populate default code editor settings by short-circuiting wp_enqueue_code_editor.
 	wp_add_inline_script(
