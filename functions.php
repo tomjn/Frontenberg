@@ -540,6 +540,8 @@ add_action(
 			const result = next( options );
 			return result;
 		} );
+		wp.data.dispatch( 'core/editor' ).lockPostAutosaving( 'no-autosave' );
+		wp.data.dispatch( 'core/editor' ).lockPostSaving( 'no-publish' );
 		wp.data.select( 'core/editor' ).isEditedPostDirty = function() {
 			return false;
 		}
