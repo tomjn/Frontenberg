@@ -4,6 +4,9 @@ if (  wp_is_xml_request() ) {
 	return;
 }
 
+// disable Jetpack GB changes
+add_filter( 'jetpack_gutenberg', '__return_false' );
+
 /**
  * Get the version string for Gutenberg.
  *
