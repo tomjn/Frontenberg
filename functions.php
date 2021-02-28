@@ -4,9 +4,6 @@ if (  wp_is_xml_request() ) {
 	return;
 }
 
-// disable Jetpack GB changes
-add_filter( 'jetpack_gutenberg', '__return_false' );
-
 /**
  * Get the version string for Gutenberg.
  *
@@ -72,6 +69,7 @@ add_action(
 		add_theme_support( 'title-tag' );
 		add_theme_support( 'post-thumbnails' );
 		add_theme_support( 'html5' );
+
 		if ( is_admin() || wp_is_xml_request() || wp_is_json_request() ) {
 			return;
 		}
@@ -665,3 +663,12 @@ function frontenberg_get_block_editor_server_block_settings() {
 // No more free advertising for Jetpack.
 add_filter( 'jetpack_gutenberg', '__return_false' );
 
+if ( class_exists( 'Jetpack_WPCOM_Block_Editor' ) ) {
+	$jpwpcombe = Jetpack_WPCOM_Block_Editor::init();
+	remove_action( 'enqueue_block_editor_assets', [ $jpwpcombe, 'enqueue_block_editor_assets' ] );
+	remove_action( 'enqueue_block_assets', [ $jpwpcombe, 'enqueue_block_assets' ] );
+	remove_action( 'mce_external_plugins', [ $jpwpcombe, 'add_tinymce_plugins' ] );
+	remove_action( 'block_editor_settings', 'Jetpack\EditorType\remember_block_editor' );
+	remove_action( 'login_init', [ $jpwpcombe, 'allow_block_editor_login' ] );
+	remove_action( 'enqueue_block_editor_assets', [ $jpwpcombe, '' ] );
+}
