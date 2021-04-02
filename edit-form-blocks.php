@@ -24,8 +24,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 global $post_type, $post_type_object, $post, $title, $editor_styles, $wp_meta_boxes;
 
 
-require_once 'shims.php';
-
 // Flag that we're loading the block editor.
 $current_screen = get_current_screen();
 $current_screen->is_block_editor( true );
