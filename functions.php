@@ -5,10 +5,10 @@ if ( wp_is_xml_request() ) {
 }
 
 // load the code.
-require_once 'includes/jetpack.php';
-require_once 'includes/navigation.php';
-require_once 'includes/restrictions.php';
-require_once 'includes/widgets.php';
+require_once __DIR__ . '/includes/jetpack.php';
+require_once __DIR__ . '/includes/navigation.php';
+require_once __DIR__ . '/includes/restrictions.php';
+require_once __DIR__ . '/includes/widgets.php';
 
 // run the code.
 \frontenberg\jetpack\bootstrap();
