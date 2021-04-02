@@ -3,7 +3,7 @@
 namespace frontenberg\navigation;
 
 function bootstrap() : void {
-	add_action( 'after_setup_theme', __NAMESPACE__ . '\\register_my_menu' );
+	add_action( 'after_setup_theme', __NAMESPACE__ . '\\register_menus' );
 }
 
 /**
