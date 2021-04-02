@@ -89,16 +89,6 @@ add_action(
 		}
 
 		show_admin_bar( true );
-
-		/*if ( function_exists( 'gutenberg_dir_path' ) ) {
-			if ( ! is_admin() && ! function_exists( 'get_current_screen' ) && ! ( php_sapi_name() == 'cli' ) ) {
-				function get_current_screen() : string {
-					return '';
-				}
-			}
-		}*/
-
-		add_action( 'template_redirect', 'frontenberg_load_wp5_editor' );
 	}
 );
 
