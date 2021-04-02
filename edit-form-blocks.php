@@ -13,8 +13,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
-require_once 'shims.php';
-
 /**
  * @global string       $post_type
  * @global WP_Post_Type $post_type_object
