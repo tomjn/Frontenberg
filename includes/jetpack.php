@@ -7,7 +7,7 @@ function bootstrap() : void {
 	add_filter( 'jetpack_gutenberg', '__return_false' );
 
 	if ( class_exists( 'Jetpack_WPCOM_Block_Editor' ) ) {
-		$jpwpcombe = Jetpack_WPCOM_Block_Editor::init();
+		$jpwpcombe = \Jetpack_WPCOM_Block_Editor::init();
 		remove_action( 'enqueue_block_editor_assets', [ $jpwpcombe, 'enqueue_block_editor_assets' ], 9 );
 		remove_action( 'enqueue_block_assets', [ $jpwpcombe, 'enqueue_block_assets' ] );
 		remove_action( 'mce_external_plugins', [ $jpwpcombe, 'add_tinymce_plugins' ] );
