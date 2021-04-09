@@ -23,6 +23,8 @@ function bootstrap() : void {
 	add_action( 'init', __NAMESPACE__ . '\\init' );
 
 	add_action( 'wp_footer', __NAMESPACE__ . '\\wp_footer', 99 );
+
+	add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\\block_apifetch_modifications', 99 );
 }
 
 /**
@@ -129,27 +131,35 @@ function override_post_lock( $metadata, $object_id, $meta_key ) {
 function wp_footer() : void {
 	?>
 <script>
-	window._wpLoadBlockEditor.then( function( editor ) {
-		wp.apiFetch.use( function ( options, next ) {
-			if ( 'method' in options ) {
-				if ( [ 'PATCH', 'PUT', 'DELETE' ].indexOf( options.method.toUpperCase() ) >= 0 ) {
-					return new Promise( function( resolve, reject ) {
-						// Save Data
-						resolve(data);
-					} );
-				}
+	if ( window._wpLoadBlockEditor ) {
+		window._wpLoadBlockEditor.then( function( editor ) {
+			wp.data.dispatch( 'core/editor' ).lockPostAutosaving( 'no-autosave' );
+			wp.data.dispatch( 'core/editor' ).lockPostSaving( 'no-publish' );
+			wp.data.select( 'core/editor' ).isEditedPostDirty = function() {
+				return false;
 			}
-			const result = next( options );
-			return result;
 		} );
-		wp.data.dispatch( 'core/editor' ).lockPostAutosaving( 'no-autosave' );
-		wp.data.dispatch( 'core/editor' ).lockPostSaving( 'no-publish' );
-		wp.data.select( 'core/editor' ).isEditedPostDirty = function() {
-			return false;
-		}
-	} );
+	}
 </script>
 	<?php
+}
+
+function block_apifetch_modifications() : void {
+	$script = <<<SCRIPT
+	wp.apiFetch.use( function ( options, next ) {
+		if ( 'method' in options ) {
+			if ( [ 'PATCH', 'PUT', 'DELETE' ].indexOf( options.method.toUpperCase() ) >= 0 ) {
+				return new Promise( function( resolve, reject ) {
+					// Save Data
+					resolve(data);
+				} );
+			}
+		}
+		const result = next( options );
+		return result;
+	} );
+	SCRIPT;
+	wp_add_inline_script( 'wp-api-fetch', $script );
 }
 
 function update_post_metadata( $check, $object_id, $meta_key ) {
