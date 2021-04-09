@@ -1,7 +1,17 @@
 <?php
+/**
+ * Lock down APIs.
+ *
+ * @package tomjn/frontenberg
+ */
 
 namespace frontenberg\restrictions;
 
+/**
+ * Add hooks and filters.
+ *
+ * @return void
+ */
 function bootstrap() : void {
 	// Disable the post locked dialog.
 	add_filter( 'show_post_locked_dialog', '__return_false' );
@@ -60,17 +70,17 @@ function filter_user_permissions( array $allcaps ) : array {
 	$allcaps['edit_published_posts'] = true;
 
 	// remove some capabilities the user should never have.
-	$allcaps['edit_pages']           = false;
-	$allcaps['switch_themes']        = false;
-	$allcaps['edit_themes']          = false;
-	$allcaps['edit_pages']           = false;
-	$allcaps['activate_plugins']     = false;
-	$allcaps['edit_plugins']         = false;
-	$allcaps['edit_users']           = false;
-	$allcaps['import']               = false;
-	$allcaps['unfiltered_html']      = false;
-	$allcaps['edit_plugins']         = false;
-	$allcaps['unfiltered_upload']    = false;
+	$allcaps['edit_pages']        = false;
+	$allcaps['switch_themes']     = false;
+	$allcaps['edit_themes']       = false;
+	$allcaps['edit_pages']        = false;
+	$allcaps['activate_plugins']  = false;
+	$allcaps['edit_plugins']      = false;
+	$allcaps['edit_users']        = false;
+	$allcaps['import']            = false;
+	$allcaps['unfiltered_html']   = false;
+	$allcaps['edit_plugins']      = false;
+	$allcaps['unfiltered_upload'] = false;
 
 	return $allcaps;
 }
@@ -85,7 +95,7 @@ function init() : void {
 		add_filter(
 			'wp_insert_post_empty_content',
 			'__return_true',
-			PHP_INT_MAX -1,
+			PHP_INT_MAX - 1,
 			2
 		);
 		add_filter(
@@ -103,16 +113,16 @@ function init() : void {
 /**
  * Override the post locks.
  *
- * @param mixed  $metadata value
- * @param mixed  $object_id ID
- * @param string $meta_key key
+ * @param mixed  $metadata value.
+ * @param mixed  $object_id ID.
+ * @param string $meta_key key.
  *
  * @return mixed
  */
 function override_post_lock( $metadata, $object_id, $meta_key ) {
 	// Here is the catch, add additional controls if needed (post_type, etc).
 	$meta_needed = '_edit_lock';
-	if ( isset( $meta_key ) && $meta_needed === $meta_key ){
+	if ( isset( $meta_key ) && $meta_needed === $meta_key ) {
 		return false;
 	}
 	// Return original if the check does not pass.
@@ -120,13 +130,9 @@ function override_post_lock( $metadata, $object_id, $meta_key ) {
 }
 
 /**
- * Trying to make changes on the server won't work, so why bother contacting the REST API anyway?
- * This function hooks into the apiFetch and adds a middleware. This middleware intercepts all
- * PATCH PUT DELETE etc requests and replaces them with "empty promises" that resolve immediately
- * without consequence.
+ * Lock saving and autosaving in the editor.
  *
- * Sure, the requests would fail anyway, but this way there's fewer pings to the server to deal
- * with, and failure is now instantaneous
+ * @return void
  */
 function wp_footer() : void {
 	?>
@@ -144,6 +150,17 @@ function wp_footer() : void {
 	<?php
 }
 
+/**
+ * Trying to make changes on the server won't work, so why bother contacting the REST API anyway?
+ * This function hooks into the apiFetch and adds a middleware. This middleware intercepts all
+ * PATCH PUT DELETE etc requests and replaces them with "empty promises" that resolve immediately
+ * without consequence.
+ *
+ * Sure, the requests would fail anyway, but this way there's fewer pings to the server to deal
+ * with, and failure is now instantaneous
+ *
+ * @return void
+ */
 function block_apifetch_modifications() : void {
 	$script = <<<SCRIPT
 	wp.apiFetch.use( function ( options, next ) {
@@ -162,6 +179,15 @@ function block_apifetch_modifications() : void {
 	wp_add_inline_script( 'wp-api-fetch', $script );
 }
 
+/**
+ * Force post edit locks off.
+ *
+ * @param mixed  $check value.
+ * @param mixed  $object_id post ID.
+ * @param string $meta_key the key.
+ *
+ * @return mixed
+ */
 function update_post_metadata( $check, $object_id, $meta_key ) {
 	if ( '_edit_lock' === $meta_key ) {
 		return false;

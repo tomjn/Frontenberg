@@ -1,4 +1,9 @@
 <?php
+/**
+ * Functions file.
+ *
+ * @package tomjn/frontenberg
+ */
 
 if ( wp_is_xml_request() ) {
 	return;
@@ -92,6 +97,11 @@ add_action(
 	}
 );
 
+/**
+ * Loads the editor.
+ *
+ * @return void
+ */
 function frontenberg_load_wp5_editor() : void {
 	global $post;
 	the_post();

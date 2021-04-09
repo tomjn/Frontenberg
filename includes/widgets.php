@@ -1,11 +1,26 @@
 <?php
+/**
+ * Widgets related code.
+ *
+ * @package tomjn/frontenberg
+ */
 
 namespace frontenberg\widgets;
 
+/**
+ * Add hooks and filters.
+ *
+ * @return void
+ */
 function bootstrap() : void {
 	add_action( 'widgets_init', __NAMESPACE__ . '\\widgets_init' );
 }
 
+/**
+ * Register sidebars
+ *
+ * @return void
+ */
 function widgets_init() : void {
 	register_sidebar(
 		[
