@@ -102,7 +102,7 @@ add_action(
  *
  * @return void
  */
-function frontenberg_load_wp5_editor() : void {
+function frontenberg_load_editor() : void {
 	global $post;
 	the_post();
 	if ( empty( $post ) ) {
@@ -112,10 +112,9 @@ function frontenberg_load_wp5_editor() : void {
 	require_once 'includes/shims.php';
 
 	if ( isset( $_GET['experiment'] ) ) {
-		// these experiments have not been secured and aren't ready yet.
-		wp_die( 'not ready yet' );
 
 		if ( 'menus' === $_GET['experiment'] ) {
+			wp_die( 'The menu navigation experiment is not ready yet.' );
 			gutenberg_navigation_init( 'gutenberg_page_gutenberg-navigation' );
 			get_header();
 			gutenberg_navigation_page();
