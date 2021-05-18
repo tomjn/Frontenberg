@@ -67,6 +67,9 @@ function rest_endpoints( array $endpoints ) : array {
 		'/wp/v2/widget-types/(?P<id>[a-zA-Z0-9_-]+)',
 	];
 	foreach ( $whitelisted as $endpoint ) {
+		if ( empty( $endpoints[ $endpoint ] ) ) {
+			continue;
+		}
 		$methods = $endpoints[ $endpoint ];
 		foreach ( $methods as $key => $method ) {
 			if ( isset( $method['permission_callback'] ) ) {
