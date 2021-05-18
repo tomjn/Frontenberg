@@ -23,6 +23,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 global $post_type, $post_type_object, $post, $title, $editor_styles, $wp_meta_boxes;
 
+if ( ! isset( $post_type ) ) {
+	$post_type = 'post';
+}
+
+if ( ! isset( $post_type_object ) ) {
+	$post_type_object = get_post_type_object( $post_type );
+}
 
 // Flag that we're loading the block editor.
 $current_screen = get_current_screen();
