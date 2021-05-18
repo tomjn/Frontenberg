@@ -47,6 +47,9 @@ function rest_endpoints( array $endpoints ) : array {
 		'/__experimental/menus/(?P<id>[\\d]+)',
 	];
 	foreach ( $whitelisted as $endpoint ) {
+		if ( empty( $endpoints[ $endpoint ] ) ) {
+			continue;
+		}
 		$methods = $endpoints[ $endpoint ];
 		foreach ( $methods as $key => $method ) {
 			if ( isset( $method['permission_callback'] ) ) {
