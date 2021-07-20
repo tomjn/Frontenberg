@@ -1,43 +1,47 @@
 <?php
 
-function use_block_editor_for_post_type( $post_type ) { return true; }
-function get_block_editor_server_block_settings() {
-	$block_registry = WP_Block_Type_Registry::get_instance();
-	$blocks         = array();
-	$fields_to_pick = array(
-		'api_version'      => 'apiVersion',
-		'title'            => 'title',
-		'description'      => 'description',
-		'icon'             => 'icon',
-		'attributes'       => 'attributes',
-		'provides_context' => 'providesContext',
-		'uses_context'     => 'usesContext',
-		'supports'         => 'supports',
-		'category'         => 'category',
-		'styles'           => 'styles',
-		'textdomain'       => 'textdomain',
-		'parent'           => 'parent',
-		'keywords'         => 'keywords',
-		'example'          => 'example',
-	);
-
-	foreach ( $block_registry->get_all_registered() as $block_name => $block_type ) {
-		foreach ( $fields_to_pick as $field => $key ) {
-			if ( ! isset( $block_type->{ $field } ) ) {
-				continue;
-			}
-
-			if ( ! isset( $blocks[ $block_name ] ) ) {
-				$blocks[ $block_name ] = array();
-			}
-
-			$blocks[ $block_name ][ $key ] = $block_type->{ $field };
-		}
-	}
-
-	return $blocks;
+if ( ! function_exists( 'use_block_editor_for_post_type' ) ) {
+	function use_block_editor_for_post_type( $post_type ) { return true; }
 }
 
+if ( ! function_exists( 'get_block_editor_server_block_settings' ) ) {
+	function get_block_editor_server_block_settings() {
+		$block_registry = WP_Block_Type_Registry::get_instance();
+		$blocks         = array();
+		$fields_to_pick = array(
+			'api_version'      => 'apiVersion',
+			'title'            => 'title',
+			'description'      => 'description',
+			'icon'             => 'icon',
+			'attributes'       => 'attributes',
+			'provides_context' => 'providesContext',
+			'uses_context'     => 'usesContext',
+			'supports'         => 'supports',
+			'category'         => 'category',
+			'styles'           => 'styles',
+			'textdomain'       => 'textdomain',
+			'parent'           => 'parent',
+			'keywords'         => 'keywords',
+			'example'          => 'example',
+		);
+
+		foreach ( $block_registry->get_all_registered() as $block_name => $block_type ) {
+			foreach ( $fields_to_pick as $field => $key ) {
+				if ( ! isset( $block_type->{ $field } ) ) {
+					continue;
+				}
+
+				if ( ! isset( $blocks[ $block_name ] ) ) {
+					$blocks[ $block_name ] = array();
+				}
+
+				$blocks[ $block_name ][ $key ] = $block_type->{ $field };
+			}
+		}
+
+		return $blocks;
+	}
+}
 
 if ( ! function_exists( 'get_block_categories' ) ) {
 	function get_block_categories( $post ) {
@@ -86,11 +90,25 @@ if ( ! function_exists( 'get_block_categories' ) ) {
 	}
 }
 
-function wp_check_post_lock( $post_id ) { return false; }
-function wp_set_post_lock() {}
-function add_meta_box() {}
-function get_page_templates() { return []; }
-function the_block_editor_meta_boxes() {}
+if ( ! function_exists( 'wp_check_post_lock' ) ) {
+	function wp_check_post_lock( $post_id ) { return false; }
+}
+
+if ( ! function_exists( 'wp_set_post_lock' ) ) {
+	function wp_set_post_lock() {}
+}
+
+if ( ! function_exists( 'add_meta_box' ) ) {
+	function add_meta_box() {}
+}
+
+if ( ! function_exists( 'get_page_templates' ) ) {
+	function get_page_templates() { return []; }
+}
+
+if ( ! function_exists( 'the_block_editor_meta_boxes' ) ) {
+	function the_block_editor_meta_boxes() {}
+}
 
 require_once ABSPATH . '/wp-admin/includes/class-wp-screen.php';
 require_once ABSPATH . '/wp-admin/includes/screen.php';
