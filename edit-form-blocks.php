@@ -23,6 +23,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 global $post_type, $post_type_object, $post, $title, $editor_styles, $wp_meta_boxes;
 
+$block_editor_context = new WP_Block_Editor_Context( array( 'post' => $post ) );
+
 if ( ! isset( $post_type ) ) {
 	$post_type = 'post';
 }
@@ -34,6 +36,14 @@ if ( ! isset( $post_type_object ) ) {
 // Flag that we're loading the block editor.
 $current_screen = get_current_screen();
 $current_screen->is_block_editor( true );
+
+// Default to is-fullscreen-mode to avoid jumps in the UI.
+add_filter(
+	'admin_body_class',
+	function( $classes ) {
+		return "$classes is-fullscreen-mode";
+	}
+);
 
 /*
  * Emoji replacement is disabled for now, until it plays nicely with React.
@@ -47,7 +57,6 @@ add_filter( 'screen_options_show_screen', '__return_false' );
 
 wp_enqueue_script( 'heartbeat' );
 wp_enqueue_script( 'wp-edit-post' );
-wp_enqueue_script( 'wp-format-library' );
 
 $rest_base = ! empty( $post_type_object->rest_base ) ? $post_type_object->rest_base : $post_type_object->name;
 
@@ -65,39 +74,7 @@ $preload_paths = array(
 	sprintf( '/wp/v2/%s/%d/autosaves?context=edit', $rest_base, $post->ID ),
 );
 
-/**
- * Preload common data by specifying an array of REST API paths that will be preloaded.
- *
- * Filters the array of paths that will be preloaded.
- *
- * @since 5.0.0
- *
- * @param string[] $preload_paths Array of paths to preload.
- * @param WP_Post  $post          Post being edited.
- */
-$preload_paths = apply_filters( 'block_editor_preload_paths', $preload_paths, $post );
-
-/*
- * Ensure the global $post remains the same after API data is preloaded.
- * Because API preloading can call the_content and other filters, plugins
- * can unexpectedly modify $post.
- */
-$backup_global_post = clone $post;
-
-$preload_data = array_reduce(
-	$preload_paths,
-	'rest_preload_api_request',
-	array()
-);
-
-// Restore the global $post as it was before API preloading.
-$post = $backup_global_post;
-
-wp_add_inline_script(
-	'wp-api-fetch',
-	sprintf( 'wp.apiFetch.use( wp.apiFetch.createPreloadingMiddleware( %s ) );', wp_json_encode( $preload_data ) ),
-	'after'
-);
+block_editor_rest_api_preload( $preload_paths, $block_editor_context );
 
 wp_add_inline_script(
 	'wp-blocks',
