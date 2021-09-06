@@ -112,80 +112,81 @@ if ( ! function_exists( 'the_block_editor_meta_boxes' ) ) {
 
 if ( ! function_exists( 'get_sample_permalink' ) ) {
 	function get_sample_permalink( $id, $title = null, $name = null ) {
-    $post = get_post( $id );
-    if ( ! $post ) {
-        return array( '', '' );
-    }
+		$post = get_post( $id );
+		if ( ! $post ) {
+			return array( '', '' );
+		}
 
-    $ptype = get_post_type_object( $post->post_type );
+		$ptype = get_post_type_object( $post->post_type );
 
-    $original_status = $post->post_status;
-    $original_date   = $post->post_date;
-    $original_name   = $post->post_name;
+		$original_status = $post->post_status;
+		$original_date   = $post->post_date;
+		$original_name   = $post->post_name;
 
-    // Hack: get_permalink() would return plain permalink for drafts, so we will fake that our post is published.
-    if ( in_array( $post->post_status, array( 'draft', 'pending', 'future' ), true ) ) {
-        $post->post_status = 'publish';
-        $post->post_name   = sanitize_title( $post->post_name ? $post->post_name : $post->post_title, $post->ID );
-    }
+		// Hack: get_permalink() would return plain permalink for drafts, so we will fake that our post is published.
+		if ( in_array( $post->post_status, array( 'draft', 'pending', 'future' ), true ) ) {
+			$post->post_status = 'publish';
+			$post->post_name   = sanitize_title( $post->post_name ? $post->post_name : $post->post_title, $post->ID );
+		}
 
-    // If the user wants to set a new name -- override the current one.
-    // Note: if empty name is supplied -- use the title instead, see #6072.
-    if ( ! is_null( $name ) ) {
-        $post->post_name = sanitize_title( $name ? $name : $title, $post->ID );
-    }
+		// If the user wants to set a new name -- override the current one.
+		// Note: if empty name is supplied -- use the title instead, see #6072.
+		if ( ! is_null( $name ) ) {
+			$post->post_name = sanitize_title( $name ? $name : $title, $post->ID );
+		}
 
-    $post->post_name = wp_unique_post_slug( $post->post_name, $post->ID, $post->post_status, $post->post_type, $post->post_parent );
+		$post->post_name = wp_unique_post_slug( $post->post_name, $post->ID, $post->post_status, $post->post_type, $post->post_parent );
 
-    $post->filter = 'sample';
+		$post->filter = 'sample';
 
-    $permalink = get_permalink( $post, true );
+		$permalink = get_permalink( $post, true );
 
-    // Replace custom post_type token with generic pagename token for ease of use.
-    $permalink = str_replace( "%$post->post_type%", '%pagename%', $permalink );
+		// Replace custom post_type token with generic pagename token for ease of use.
+		$permalink = str_replace( "%$post->post_type%", '%pagename%', $permalink );
 
-    // Handle page hierarchy.
-    if ( $ptype->hierarchical ) {
-        $uri = get_page_uri( $post );
-        if ( $uri ) {
-            $uri = untrailingslashit( $uri );
-            $uri = strrev( stristr( strrev( $uri ), '/' ) );
-            $uri = untrailingslashit( $uri );
-        }
+		// Handle page hierarchy.
+		if ( $ptype->hierarchical ) {
+			$uri = get_page_uri( $post );
+			if ( $uri ) {
+				$uri = untrailingslashit( $uri );
+				$uri = strrev( stristr( strrev( $uri ), '/' ) );
+				$uri = untrailingslashit( $uri );
+			}
 
-        /** This filter is documented in wp-admin/edit-tag-form.php */
-        $uri = apply_filters( 'editable_slug', $uri, $post );
-        if ( ! empty( $uri ) ) {
-            $uri .= '/';
-        }
-        $permalink = str_replace( '%pagename%', "{$uri}%pagename%", $permalink );
-    }
+			/** This filter is documented in wp-admin/edit-tag-form.php */
+			$uri = apply_filters( 'editable_slug', $uri, $post );
+			if ( ! empty( $uri ) ) {
+				$uri .= '/';
+			}
+			$permalink = str_replace( '%pagename%', "{$uri}%pagename%", $permalink );
+		}
 
-    /** This filter is documented in wp-admin/edit-tag-form.php */
-    $permalink         = array( $permalink, apply_filters( 'editable_slug', $post->post_name, $post ) );
-    $post->post_status = $original_status;
-    $post->post_date   = $original_date;
-    $post->post_name   = $original_name;
-    unset( $post->filter );
+		/** This filter is documented in wp-admin/edit-tag-form.php */
+		$permalink         = array( $permalink, apply_filters( 'editable_slug', $post->post_name, $post ) );
+		$post->post_status = $original_status;
+		$post->post_date   = $original_date;
+		$post->post_name   = $original_name;
+		unset( $post->filter );
 
-    /**
-     * Filters the sample permalink.
-     *
-     * @since 4.4.0
-     *
-     * @param array   $permalink {
-     *     Array containing the sample permalink with placeholder for the post name, and the post name.
-     *
-     *     @type string $0 The permalink with placeholder for the post name.
-     *     @type string $1 The post name.
-     * }
-     * @param int     $post_id   Post ID.
-     * @param string  $title     Post title.
-     * @param string  $name      Post name (slug).
-     * @param WP_Post $post      Post object.
-     */
-    return apply_filters( 'get_sample_permalink', $permalink, $post->ID, $title, $name, $post );
+		/**
+		* Filters the sample permalink.
+		*
+		* @since 4.4.0
+		*
+		* @param array   $permalink {
+		*     Array containing the sample permalink with placeholder for the post name, and the post name.
+		*
+		*     @type string $0 The permalink with placeholder for the post name.
+		*     @type string $1 The post name.
+		* }
+		* @param int     $post_id   Post ID.
+		* @param string  $title     Post title.
+		* @param string  $name      Post name (slug).
+		* @param WP_Post $post      Post object.
+		*/
+		return apply_filters( 'get_sample_permalink', $permalink, $post->ID, $title, $name, $post );
 	}
 }
+
 require_once ABSPATH . '/wp-admin/includes/class-wp-screen.php';
 require_once ABSPATH . '/wp-admin/includes/screen.php';
