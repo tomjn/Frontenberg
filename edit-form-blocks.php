@@ -58,7 +58,8 @@ add_filter( 'screen_options_show_screen', '__return_false' );
 wp_enqueue_script( 'heartbeat' );
 wp_enqueue_script( 'wp-edit-post' );
 
-$rest_base = ! empty( $post_type_object->rest_base ) ? $post_type_object->rest_base : $post_type_object->name;
+$post_type_name = ! empty( $post_type_object->name ) ? $post_type_object->name : 'post';
+$rest_base = ! empty( $post_type_object->rest_base ) ? $post_type_object->rest_base : $post_type_name;
 
 // Preload common data.
 $preload_paths = array(
