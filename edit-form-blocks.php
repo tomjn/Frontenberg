@@ -18,12 +18,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @global WP_Post_Type $post_type_object
  * @global WP_Post      $post             Global post object.
  * @global string       $title
- * @global array        $editor_styles
  * @global array        $wp_meta_boxes
  */
-global $post_type, $post_type_object, $post, $title, $editor_styles, $wp_meta_boxes;
-
-$block_editor_context = new WP_Block_Editor_Context( array( 'post' => $post ) );
+global $post_type, $post_type_object, $post, $title, $wp_meta_boxes;
 
 if ( ! isset( $post_type ) ) {
 	$post_type = 'post';
@@ -33,6 +30,9 @@ if ( ! isset( $post_type_object ) ) {
 	$post_type_object = get_post_type_object( $post_type );
 }
 
+
+$block_editor_context = new WP_Block_Editor_Context( array( 'post' => $post ) );
+
 // Flag that we're loading the block editor.
 $current_screen = get_current_screen();
 $current_screen->is_block_editor( true );
@@ -40,7 +40,7 @@ $current_screen->is_block_editor( true );
 // Default to is-fullscreen-mode to avoid jumps in the UI.
 add_filter(
 	'admin_body_class',
-	function( $classes ) {
+	static function( $classes ) {
 		return "$classes is-fullscreen-mode";
 	}
 );
@@ -58,8 +58,7 @@ add_filter( 'screen_options_show_screen', '__return_false' );
 wp_enqueue_script( 'heartbeat' );
 wp_enqueue_script( 'wp-edit-post' );
 
-$post_type_name = ! empty( $post_type_object->name ) ? $post_type_object->name : 'post';
-$rest_base = ! empty( $post_type_object->rest_base ) ? $post_type_object->rest_base : $post_type_name;
+$rest_base = ! empty( $post_type_object->rest_base ) ? $post_type_object->rest_base : $post_type_object->name;
 
 // Preload common data.
 $preload_paths = array(
@@ -122,31 +121,6 @@ wp_add_inline_script(
 	'before'
 );
 
-
-/*
- * Initialize the editor.
- */
-
-$align_wide         = get_theme_support( 'align-wide' );
-$color_palette      = current( (array) get_theme_support( 'editor-color-palette' ) );
-$font_sizes         = current( (array) get_theme_support( 'editor-font-sizes' ) );
-$gradient_presets   = current( (array) get_theme_support( 'editor-gradient-presets' ) );
-$custom_line_height = get_theme_support( 'custom-line-height' );
-$custom_units       = get_theme_support( 'custom-units' );
-$custom_spacing     = get_theme_support( 'custom-spacing' );
-
-/**
- * Filters the allowed block types for the editor, defaulting to true (all
- * block types supported).
- *
- * @since 5.0.0
- *
- * @param bool|array $allowed_block_types Array of block type slugs, or
- *                                        boolean to enable/disable all.
- * @param WP_Post    $post                The post resource data.
- */
-$allowed_block_types = apply_filters( 'allowed_block_types', true, $post );
-
 /*
  * Get all available templates for the post/page attributes meta-box.
  * The "Default template" array element should only be added if the array is
@@ -154,96 +128,13 @@ $allowed_block_types = apply_filters( 'allowed_block_types', true, $post );
  * besides the default value.
  */
 $available_templates = wp_get_theme()->get_page_templates( get_post( $post->ID ) );
-$available_templates = ! empty( $available_templates ) ? array_merge(
+$available_templates = ! empty( $available_templates ) ? array_replace(
 	array(
 		/** This filter is documented in wp-admin/includes/meta-boxes.php */
 		'' => apply_filters( 'default_page_template_title', __( 'Default template' ), 'rest-api' ),
 	),
 	$available_templates
 ) : $available_templates;
-
-// Media settings.
-$max_upload_size = wp_max_upload_size();
-if ( ! $max_upload_size ) {
-	$max_upload_size = 0;
-}
-
-// Editor Styles.
-$styles = array(
-	array(
-		'css' => file_get_contents(
-			is_rtl()
-				? ABSPATH . WPINC . '/css/dist/editor/editor-styles-rtl.css'
-				: ABSPATH . WPINC . '/css/dist/editor/editor-styles.css'
-		),
-	),
-);
-
-$styles[] = array(
-	'css' => 'body { font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif }',
-);
-
-if ( $editor_styles && current_theme_supports( 'editor-styles' ) ) {
-	foreach ( $editor_styles as $style ) {
-		if ( preg_match( '~^(https?:)?//~', $style ) ) {
-			$response = wp_remote_get( $style );
-			if ( ! is_wp_error( $response ) ) {
-				$styles[] = array(
-					'css' => wp_remote_retrieve_body( $response ),
-				);
-			}
-		} else {
-			$file = get_theme_file_path( $style );
-			if ( is_file( $file ) ) {
-				$styles[] = array(
-					'css'     => file_get_contents( $file ),
-					'baseURL' => get_theme_file_uri( $style ),
-				);
-			}
-		}
-	}
-}
-
-// Default editor styles.
-$default_editor_styles = array(
-	array(
-		'css' => file_get_contents(
-			is_rtl()
-				? ABSPATH . WPINC . '/css/dist/editor/editor-styles-rtl.css'
-				: ABSPATH . WPINC . '/css/dist/editor/editor-styles.css'
-		),
-	),
-);
-
-// Image sizes.
-
-/** This filter is documented in wp-admin/includes/media.php */
-$image_size_names = apply_filters(
-	'image_size_names_choose',
-	array(
-		'thumbnail' => __( 'Thumbnail' ),
-		'medium'    => __( 'Medium' ),
-		'large'     => __( 'Large' ),
-		'full'      => __( 'Full Size' ),
-	)
-);
-
-$available_image_sizes = array();
-foreach ( $image_size_names as $image_size_slug => $image_size_name ) {
-	$available_image_sizes[] = array(
-		'slug' => $image_size_slug,
-		'name' => $image_size_name,
-	);
-}
-
-$image_dimensions = array();
-$all_sizes        = wp_get_registered_image_subsizes();
-foreach ( $available_image_sizes as $size ) {
-	$key = $size['slug'];
-	if ( isset( $all_sizes[ $key ] ) ) {
-		$image_dimensions[ $key ] = $all_sizes[ $key ];
-	}
-}
 
 // Lock settings.
 $user_id = wp_check_post_lock( $post->ID );
@@ -285,31 +176,21 @@ if ( $user_id ) {
  * Filters the body placeholder text.
  *
  * @since 5.0.0
+ * @since 5.8.0 Changed the default placeholder text.
  *
- * @param string  $text Placeholder text. Default 'Start writing or type / to choose a block'.
+ * @param string  $text Placeholder text. Default 'Type / to choose a block'.
  * @param WP_Post $post Post object.
  */
-$body_placeholder = apply_filters( 'write_your_story', __( 'Start writing or type / to choose a block' ), $post );
+$body_placeholder = apply_filters( 'write_your_story', __( 'Type / to choose a block' ), $post );
 
 $editor_settings = array(
-	'alignWide'                            => $align_wide,
 	'availableTemplates'                   => $available_templates,
-	'allowedBlockTypes'                    => $allowed_block_types,
-	'disableCustomColors'                  => get_theme_support( 'disable-custom-colors' ),
-	'disableCustomFontSizes'               => get_theme_support( 'disable-custom-font-sizes' ),
-	'disableCustomGradients'               => get_theme_support( 'disable-custom-gradients' ),
 	'disablePostFormats'                   => ! current_theme_supports( 'post-formats' ),
 	/** This filter is documented in wp-admin/edit-form-advanced.php */
 	'titlePlaceholder'                     => apply_filters( 'enter_title_here', __( 'Add title' ), $post ),
 	'bodyPlaceholder'                      => $body_placeholder,
-	'isRTL'                                => is_rtl(),
 	'autosaveInterval'                     => AUTOSAVE_INTERVAL,
-	'maxUploadFileSize'                    => $max_upload_size,
-	'allowedMimeTypes'                     => get_allowed_mime_types(),
-	'styles'                               => $styles,
-	'defaultEditorStyles'                  => $default_editor_styles,
-	'imageSizes'                           => $available_image_sizes,
-	'imageDimensions'                      => $image_dimensions,
+	'styles'                               => get_block_editor_theme_styles(),
 	'richEditingEnabled'                   => user_can_richedit(),
 	'postLock'                             => $lock_details,
 	'postLockUtils'                        => array(
@@ -317,15 +198,14 @@ $editor_settings = array(
 		'unlockNonce' => wp_create_nonce( 'update-post_' . $post->ID ),
 		'ajaxUrl'     => admin_url( 'admin-ajax.php' ),
 	),
+	'supportsLayout'                       => WP_Theme_JSON_Resolver::theme_has_support(),
 	'__experimentalBlockPatterns'          => WP_Block_Patterns_Registry::get_instance()->get_all_registered(),
 	'__experimentalBlockPatternCategories' => WP_Block_Pattern_Categories_Registry::get_instance()->get_all_registered(),
+	'supportsTemplateMode'                 => current_theme_supports( 'block-templates' ),
 
 	// Whether or not to load the 'postcustom' meta box is stored as a user meta
 	// field so that we're not always loading its assets.
 	'enableCustomFields'                   => (bool) get_user_meta( get_current_user_id(), 'enable_custom_fields', true ),
-	'enableCustomLineHeight'               => $custom_line_height,
-	'enableCustomUnits'                    => $custom_units,
-	'enableCustomSpacing'                  => $custom_spacing,
 );
 
 $autosave = wp_get_post_autosave( $post->ID );
@@ -337,18 +217,6 @@ if ( $autosave ) {
 	} else {
 		wp_delete_post_revision( $autosave->ID );
 	}
-}
-
-if ( false !== $color_palette ) {
-	$editor_settings['colors'] = $color_palette;
-}
-
-if ( false !== $font_sizes ) {
-	$editor_settings['fontSizes'] = $font_sizes;
-}
-
-if ( false !== $gradient_presets ) {
-	$editor_settings['gradients'] = $gradient_presets;
 }
 
 if ( ! empty( $post_type_object->template ) ) {
@@ -380,7 +248,6 @@ wp_enqueue_editor();
  * Styles
  */
 wp_enqueue_style( 'wp-edit-post' );
-wp_enqueue_style( 'wp-format-library' );
 
 /**
  * Fires after block assets have been enqueued for the editing interface.
@@ -412,7 +279,7 @@ if ( ! isset( $core_meta_boxes['postcustom'] ) || ! $core_meta_boxes['postcustom
  * @param array   $editor_settings Default editor settings.
  * @param WP_Post $post            Post being edited.
  */
-//$editor_settings = apply_filters( 'block_editor_settings', $editor_settings, $post );
+$editor_settings = get_block_editor_settings( $editor_settings, $block_editor_context );
 
 $init_script = <<<JS
 ( function() {
@@ -433,41 +300,44 @@ $script = sprintf(
 );
 wp_add_inline_script( 'wp-edit-post', $script );
 
+if ( (int) get_option( 'page_for_posts' ) === $post->ID ) {
+	add_action( 'admin_enqueue_scripts', '_wp_block_editor_posts_page_notice' );
+}
+
 get_header();
 ?>
-<h1 class="screen-reader-text hide-if-no-js"><?php echo esc_html( $title ); ?></h1>
-<div id="editor" class="block-editor__container hide-if-no-js"></div>
-<div id="metaboxes" class="hidden">
-	<?php the_block_editor_meta_boxes(); ?>
-</div>
-
-<?php // JavaScript is disabled. ?>
-<div class="wrap hide-if-js block-editor-no-js">
-	<h1 class="wp-heading-inline"><?php echo esc_html( $title ); ?></h1>
-	<div class="notice notice-error notice-alt">
-		<p>
-			<?php
-				$message = sprintf(
-					/* translators: %s: A link to install the Classic Editor plugin. */
-					__( 'The block editor requires JavaScript. Please enable JavaScript in your browser settings, or try the <a href="%s">Classic Editor plugin</a>.' ),
-					esc_url( wp_nonce_url( self_admin_url( 'plugin-install.php?tab=favorites&user=wordpressdotorg&save=0' ), 'save_wporg_username_' . get_current_user_id() ) )
-				);
-
-				/**
-				 * Filters the message displayed in the block editor interface when JavaScript is
-				 * not enabled in the browser.
-				 *
-				 * @since 5.0.3
-				 *
-				 * @param string  $message The message being displayed.
-				 * @param WP_Post $post    The post being edited.
-				 */
-				echo apply_filters( 'block_editor_no_javascript_message', $message, $post );
-				?>
-		</p>
+	<h1 class="screen-reader-text hide-if-no-js"><?php echo esc_html( $title ); ?></h1>
+	<div id="editor" class="block-editor__container hide-if-no-js"></div>
+	<div id="metaboxes" class="hidden">
+		<?php the_block_editor_meta_boxes(); ?>
 	</div>
-</div>
 
+	<?php // JavaScript is disabled. ?>
+	<div class="wrap hide-if-js block-editor-no-js">
+		<h1 class="wp-heading-inline"><?php echo esc_html( $title ); ?></h1>
+		<div class="notice notice-error notice-alt">
+			<p>
+				<?php
+					$message = sprintf(
+						/* translators: %s: A link to install the Classic Editor plugin. */
+						__( 'The block editor requires JavaScript. Please enable JavaScript in your browser settings, or try the <a href="%s">Classic Editor plugin</a>.' ),
+						esc_url( wp_nonce_url( self_admin_url( 'plugin-install.php?tab=favorites&user=wordpressdotorg&save=0' ), 'save_wporg_username_' . get_current_user_id() ) )
+					);
+
+					/**
+					 * Filters the message displayed in the block editor interface when JavaScript is
+					 * not enabled in the browser.
+					 *
+					 * @since 5.0.3
+					 *
+					 * @param string  $message The message being displayed.
+					 * @param WP_Post $post    The post being edited.
+					 */
+					echo apply_filters( 'block_editor_no_javascript_message', $message, $post );
+					?>
+			</p>
+		</div>
+	</div>
 <?php
 get_footer();
 
