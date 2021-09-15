@@ -4,23 +4,27 @@ A limited frontend preview of the Gutenberg editor, **not to be confused with a 
 
 Also, if you're logged into WP Admin, be careful, other users will see autosave notices and your changes will be saved!
 
-## I Want To Put a Gutenberg Editor in My Theme
+**!! Frontenberg is not a frontend editor !!** and cannot be used to create a frontend editor.
 
-This is not the project for you. This is intended to act as a basic sandbox, not a frontend editor component.
+## I Want To Put the Gutenberg Editor in My Theme
+
+This is not the project for you. This is intended to act as a basic sandbox for demonstrating the block editor without installing WP or logging in, it is not a frontend editor component.
 
 ### Is it Safe in Production?
 
-Probably not, it was built specifically for https://frontenberg.tomjn.com, not as a general purpose block editor component.
+**Probably not**, it was built specifically for https://frontenberg.tomjn.com, not as a general purpose block editor component.
+
+There are a lot of restrictions that try to lock down Frontenberg, if any of these are lifted to allow the creation or updating of posts, bugs will occur, and security will be compromised. For example, early versions of Frontenberg allowed people to create terms and other unwanted data on the site that had to be cleaned up and locked down.
 
 ### Can I Use it On a Client Site?
 
-I strongly recommend against it
+Do not do this, it is a terrible and dangerous idea.
 
 ## Can I Use This To Create Frontend Editors?
 
-Not really, it could be used that way, but that would be dangerous, and there are lots of known problems. **Don't use Frontenberg to create a working Frontend Editor**. Don't expect bug reports to be fixed either unless it impacts the core use of a sandbox e.g. frontenberg.tomjn.com testgutenberg.com or wordpress.org/gutenberg
+No, that would be dangerous, and there are lots of known problems. **Don't try to use Frontenberg to create a Frontend Editor**. Don't expect bug reports to be fixed either unless it impacts the core use of a sandbox e.g. frontenberg.tomjn.com testgutenberg.com or wordpress.org/gutenberg
 
-### What Should I Use?
+### What Should I Use Instead Then To Create Frontend Editors?
 
 Use the `BlockProvider` and `BlockList` components provided by Gutenberg
 
