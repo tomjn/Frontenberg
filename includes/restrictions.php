@@ -143,7 +143,10 @@ function wp_footer() : void {
 			wp.data.dispatch( 'core/editor' ).lockPostSaving( 'no-publish' );
 			wp.data.select( 'core/editor' ).isEditedPostDirty = function() {
 				return false;
-			}
+			};
+			wp.data.select('core').getCurrentUser = function() {
+				return false;
+			};
 		} );
 	}
 </script>
