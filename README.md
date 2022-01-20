@@ -1,4 +1,4 @@
-# Frontenberg
+# Frontenberg Classic
 
 A limited frontend preview of the Gutenberg editor, **not to be confused with a frontend editor**. It's literally the Gutenberg block editor post interface, but loaded on the frontend. It also includes some filters to prevent logged out users abusing APIs, but allowing Gutenberg to still function
 
