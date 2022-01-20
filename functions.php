@@ -146,6 +146,7 @@ function frontenberg_remove_toolbar_node( $wp_admin_bar ) : void {
 		return;
 	}
 
+	$wp_admin_bar->remove_node( 'view' );
 	$wp_admin_bar->remove_node( 'wpseo-menu' );
 	$wp_admin_bar->remove_node( 'new-content' );
 	$wp_admin_bar->remove_node( 'comments' );
