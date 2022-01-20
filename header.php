@@ -7,7 +7,7 @@
 		<?php wp_head(); ?>
 	</head>
 
-	<body class="wp-admin wp-core-ui js post-php admin-bar post-type-post branch-5-3 version-5-3-2 admin-color-fresh locale-en-us multisite block-editor-page wp-embed-responsive customize-support svg">
+	<body class="wp-admin wp-core-ui js post-php admin-bar post-type-post branch-5-8 version-5-8-3 admin-color-fresh locale-en-us block-editor-page wp-embed-responsive customize-support svg">
 		<div id="wpwrap">
 			<div id="adminmenumain" role="navigation" aria-label="Main menu">
 				<a href="#wpbody-content" class="screen-reader-shortcut">Skip to main content</a>
@@ -15,12 +15,12 @@
 				<div id="adminmenuback"></div>
 				<div id="adminmenuwrap">
 					<ul id="adminmenu">
-						<li class="wp-not-current-submenu menu-top menu-icon-performance menu-top-last" id="menu-comments">
-							<a href="#" class="wp-not-current-submenu menu-top menu-icon-performance menu-top-last">
+						<li class="menu-item menu-icon-performance" id="menu-comments">
+							<a href="#" class="menu-icon-info">
 								<div class="wp-menu-arrow">
 									<div></div>
 								</div>
-								<div class="wp-menu-image dashicons-before dashicons-performance"><br></div>
+								<div class="wp-menu-image dashicons-before dashicons-info"><br></div>
 								<div class="wp-menu-name"><?php echo esc_html( frontenberg_get_block_editor_version() ); ?></div>
 							</a>
 						</li>
