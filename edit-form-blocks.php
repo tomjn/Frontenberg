@@ -22,11 +22,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 global $post_type, $post_type_object, $post, $title, $wp_meta_boxes;
 
-if ( ! isset( $post_type ) ) {
+if ( empty( $post_type ) ) {
 	$post_type = 'post';
 }
 
-if ( ! isset( $post_type_object ) ) {
+if ( empty( $post_type_object ) ) {
 	$post_type_object = get_post_type_object( $post_type );
 }
 
