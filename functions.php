@@ -139,6 +139,11 @@ function frontenberg_load_editor() : void {
 
 	}
 	set_current_screen( 'post' );
+
+	// Necessary for query monitor
+	remove_all_filters( 'admin_init' );
+	do_action( 'admin_init' );
+
 	require_once 'edit-form-blocks.php';
 }
 
