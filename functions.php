@@ -21,6 +21,7 @@ require_once __DIR__ . '/includes/widgets.php';
 \frontenberg\restrictions\bootstrap();
 \frontenberg\widgets\bootstrap();
 
+
 add_action( 'after_setup_theme', 'frontenberg_after_setup_theme' );
 function frontenberg_after_setup_theme() : void {
 	// Add support for block styles.
@@ -79,6 +80,7 @@ add_action(
 		wp_enqueue_script( 'heartbeat' );
 		wp_enqueue_script( 'wp-edit-post' );
 		wp_enqueue_script( 'wp-format-library' );
+		wp_dequeue_style('global-styles');
 		do_action( 'enqueue_block_editor_assets' );
 	}
 );
