@@ -21,6 +21,12 @@ require_once __DIR__ . '/includes/widgets.php';
 \frontenberg\restrictions\bootstrap();
 \frontenberg\widgets\bootstrap();
 
+add_action( 'after_setup_theme', 'frontenberg_after_setup_theme' );
+function frontenberg_after_setup_theme() : void {
+	// Add support for block styles.
+	add_theme_support( 'wp-block-styles' );
+}
+
 /**
  * Get the version string for Gutenberg.
  *
@@ -83,7 +89,6 @@ add_action(
 		add_theme_support( 'align-wide' );
 		add_theme_support( 'title-tag' );
 		add_theme_support( 'post-thumbnails' );
-		add_theme_support( 'html5' );
 
 		if ( is_admin() || wp_is_xml_request() || wp_is_json_request() ) {
 			return;
